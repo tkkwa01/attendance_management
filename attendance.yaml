@@ -1,0 +1,367 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Attendance Management System
+  description: An API for managing employee attendance
+paths:
+  /employees:
+    get:
+      summary: Get a list of employees
+      responses:
+        '200':
+          description: A list of employees
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Employee'
+    post:
+      summary: Create a new employee
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Employee'
+      responses:
+        '201':
+          description: Created new employee
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+  /employees/{employeeId}:
+    get:
+      summary: Get a specific employee
+      parameters:
+        - in: path
+          name: employeeId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the employee
+      responses:
+        '200':
+          description: Specific employee
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+    put:
+      summary: Update an employee
+      parameters:
+        - in: path
+          name: employeeId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the employee to update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Employee'
+      responses:
+        '200':
+          description: Updated employee
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+    delete:
+      summary: Delete an employee
+      parameters:
+        - in: path
+          name: employeeId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the employee to delete
+      responses:
+        '204':
+          description: Deleted employee
+  /companies:
+    get:
+      summary: Get a list of companies
+      responses:
+        '200':
+          description: A list of companies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Company'
+    post:
+      summary: Create a new company
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Company'
+      responses:
+        '201':
+          description: Created new company
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+  /companies/{companyId}:
+    get:
+      summary: Get a specific company
+      parameters:
+        - in: path
+          name: companyId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the company
+      responses:
+        '200':
+          description: Specific company
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+    put:
+      summary: Update a company
+      parameters:
+        - in: path
+          name: companyId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the company to update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Company'
+      responses:
+        '200':
+          description: Updated company
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+    delete:
+      summary: Delete a company
+      parameters:
+        - in: path
+          name: companyId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the company to delete
+      responses:
+        '204':
+          description: Deleted company
+  /attendances:
+    get:
+      summary: Get a list of attendances
+      responses:
+        '200':
+          description: A list of attendances
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Attendance'
+    post:
+      summary: Create a new attendance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Attendance'
+      responses:
+        '201':
+          description: Created new attendance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attendance'
+  /attendances/{attendanceId}:
+    get:
+      summary: Get a specific attendance
+      parameters:
+        - in: path
+          name: attendanceId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the attendance
+      responses:
+        '200':
+          description: Specific attendance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attendance'
+    put:
+      summary: Update an attendance
+      parameters:
+        - in: path
+          name: attendanceId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the attendance to update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Attendance'
+      responses:
+        '200':
+          description: Updated attendance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attendance'
+    delete:
+      summary: Delete an attendance
+      parameters:
+        - in: path
+          name: attendanceId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the attendance to delete
+      responses:
+        '204':
+          description: Deleted attendance
+  /salaries:
+    get:
+      summary: Get a list of salaries
+      responses:
+        '200':
+          description: A list of salaries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Salary'
+    post:
+      summary: Create a new salary
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Salary'
+      responses:
+        '201':
+          description: Created new salary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Salary'
+  /salaries/{salaryId}:
+    get:
+      summary: Get a specific salary
+      parameters:
+        - in: path
+          name: salaryId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the salary
+      responses:
+        '200':
+          description: Specific salary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Salary'
+    put:
+      summary: Update a salary
+      parameters:
+        - in: path
+          name: salaryId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the salary to update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Salary'
+      responses:
+        '200':
+          description: Updated salary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Salary'
+    delete:
+      summary: Delete a salary
+      parameters:
+        - in: path
+          name: salaryId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the salary to delete
+      responses:
+        '204':
+          description: Deleted salary
+components:
+  schemas:
+    Employee:
+      type: object
+      properties:
+        employeeId:
+          type: integer
+        employeeName:
+          type: string
+        salaryType:
+          type: string
+          enum: [Hourly, Monthly]
+    Company:
+      type: object
+      properties:
+        companyId:
+          type: integer
+        companyName:
+          type: string
+    Attendance:
+      type: object
+      properties:
+        attendanceId:
+          type: integer
+        employeeId:
+          type: integer
+        companyId:
+          type: integer
+        attendanceDate:
+          type: string
+          format: date
+        checkInTime:
+          type: string
+          format: time
+        checkOutTime:
+          type: string
+          format: time
+    Salary:
+      type: object
+      properties:
+        salaryId:
+          type: integer
+        employeeId:
+          type: integer
+        companyId:
+          type: integer
+        monthYear:
+          type: string
+          format: date
+        monthlySalary:
+          type: number
+          format: float
+        hourlyWage:
+          type: number
+          format: float
+        hoursWorked:
+          type: integer
