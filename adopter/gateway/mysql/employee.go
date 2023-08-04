@@ -52,3 +52,14 @@ func (e employee) Update(ctx context.Context, employee *domain.Employees) error 
 	}
 	return nil
 }
+
+func (e employee) Delete(ctx context.Context, number uint) error {
+	db := ctx.DB()
+
+	var employee domain.Employees
+	res := db.Where("employee_number = ?", number).Delete(&employee)
+	if res.Error != nil {
+		return res.Error
+	}
+	return nil
+}
