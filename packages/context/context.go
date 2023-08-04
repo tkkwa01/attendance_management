@@ -4,15 +4,19 @@ import (
 	"attendance-management/packages/errors"
 	"attendance-management/packages/validate"
 	"github.com/go-playground/validator/v10"
+	"gorm.io/gorm"
 )
 
-type context interface {
+type Context interface {
 	Error() *errors.Error
 	Validate(i interface{}) error
+	DB() *gorm.DB
 }
 
 type ctx struct {
-	err *errors.Error
+	err   *errors.Error
+	getDB func() *gorm.DB
+	db    *gorm.DB
 }
 
 func (c *ctx) Error() *errors.Error {
