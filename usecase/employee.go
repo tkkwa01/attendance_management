@@ -10,7 +10,7 @@ type EmployeeInputPort interface {
 	Create(ctx context.Context, req *request.CreateEmployee) error
 	GetByID(ctx context.Context, number uint) error
 	Update(ctx context.Context, req *request.UpdateEmployee) error
-	//Delete() error
+	Delete(ctx context.Context, number uint) error
 }
 
 type EmployeeOutputPort interface {
@@ -25,6 +25,7 @@ type EmployeeRepository interface {
 	GetByID(ctx context.Context, number uint) (*domain.Employees, error)
 	Update(ctx context.Context, employee *domain.Employees) error
 	NumberExist(ctx context.Context, number uint) error
+	Delete(ctx context.Context, number uint) error
 }
 
 type employee struct {
@@ -87,4 +88,12 @@ func (e employee) Update(ctx context.Context, req *request.UpdateEmployee) error
 		return err
 	}
 	return e.outputPort.Update(employee)
+}
+
+func (e employee) Delete(ctx context.Context, number uint) error {
+	err := e.EmployeeRepo.Delete(ctx, number)
+	if err != nil {
+		return err
+	}
+	return e.outputPort.Delete()
 }

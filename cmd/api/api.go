@@ -2,8 +2,8 @@ package api
 
 import (
 	httpController "attendance-management/adopter/controller/http"
-	"attendance-management/adopter/controller/presenter"
 	mysqlRepository "attendance-management/adopter/gateway/mysql"
+	"attendance-management/adopter/presenter"
 	"attendance-management/config"
 	"attendance-management/driver"
 	"attendance-management/packages/http/middleware"

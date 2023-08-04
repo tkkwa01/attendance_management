@@ -35,6 +35,6 @@ func (e *employee) Update(res *domain.Employees) error {
 }
 
 func (e *employee) Delete() error {
-	e.c.JSON(http.StatusOK, gin.H{"message": "delete employee"})
+	e.c.JSON(http.StatusOK, "")
 	return nil
 }
