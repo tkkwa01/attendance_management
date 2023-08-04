@@ -13,3 +13,16 @@ func bind(c *gin.Context, request interface{}) (ok bool) {
 		return true
 	}
 }
+
+// stringをuintに変換する
+// Queryにしたらstringになっちゃうからです
+func stringToUint(s string) (uint, error) {
+	var n uint
+	for _, c := range []byte(s) {
+		if c < '0' || c > '9' {
+			return 0, http.ErrNotSupported
+		}
+		n = n*10 + uint(c-'0')
+	}
+	return n, nil
+}

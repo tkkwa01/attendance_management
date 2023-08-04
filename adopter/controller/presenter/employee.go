@@ -29,8 +29,8 @@ func (e *employee) GetByID(res *domain.Employees) error {
 	return nil
 }
 
-func (e *employee) Update() error {
-	e.c.JSON(http.StatusOK, gin.H{"message": "update employee"})
+func (e *employee) Update(res *domain.Employees) error {
+	e.c.JSON(http.StatusOK, res)
 	return nil
 }
 

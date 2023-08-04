@@ -31,3 +31,24 @@ func (e employee) NumberExist(ctx context.Context, number uint) error {
 	}
 	return nil
 }
+
+func (e employee) GetByID(ctx context.Context, number uint) (*domain.Employees, error) {
+	db := ctx.DB()
+
+	var employee domain.Employees
+	//ここのクエリはデータベースのカラム名と同じにすること
+	err := db.Where("employee_number = ?", number).First(&employee).Error
+	if err != nil {
+		return nil, dbError(err)
+	}
+	return &employee, nil
+}
+
+func (e employee) Update(ctx context.Context, employee *domain.Employees) error {
+	db := ctx.DB()
+
+	if err := db.Model(&employee).Updates(employee).Error; err != nil {
+		return dbError(err)
+	}
+	return nil
+}
