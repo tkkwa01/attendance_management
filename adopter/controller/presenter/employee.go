@@ -1,6 +1,7 @@
 package presenter
 
 import (
+	"attendance-management/domain"
 	"attendance-management/usecase"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -23,17 +24,17 @@ func (e *employee) Create(id uint) error {
 	return nil
 }
 
-func (e *employee) GetByID() error {
-	//TODO implement me
-	panic("implement me")
+func (e *employee) GetByID(res *domain.Employees) error {
+	e.c.JSON(http.StatusOK, res)
+	return nil
 }
 
 func (e *employee) Update() error {
-	//TODO implement me
-	panic("implement me")
+	e.c.JSON(http.StatusOK, gin.H{"message": "update employee"})
+	return nil
 }
 
 func (e *employee) Delete() error {
-	//TODO implement me
-	panic("implement me")
+	e.c.JSON(http.StatusOK, gin.H{"message": "delete employee"})
+	return nil
 }

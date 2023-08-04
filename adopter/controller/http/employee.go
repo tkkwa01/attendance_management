@@ -37,3 +37,12 @@ func (e employee) Create(ctx context.Context, c *gin.Context) error {
 
 	return inputPort.Create(ctx, &req)
 }
+
+// get employee by number
+func (e employee) GetEmployee(ctx context.Context, c *gin.Context) error {
+	number := c.Query("number")
+	outputPort := e.outputFactory(c)
+	inputPort := e.inputFactory(outputPort)
+
+	return inputPort.GetByID(ctx, number)
+}

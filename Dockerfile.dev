@@ -12,4 +12,4 @@ RUN go mod download
 
 ENV DOTENV_PATH=/go/src/.env
 
-#CMD ["go","run","main.go"]
+CMD ["air"]

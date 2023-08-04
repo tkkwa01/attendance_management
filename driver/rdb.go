@@ -15,7 +15,7 @@ func init() {
 	var err error
 
 	dsn := fmt.Sprintf(
-		"root:password@tcp(db:3306)/attendance_management?charset=utf8mb4&parseTime=True&loc=Local",
+		"root:password@tcp(db:3306)/attendance-management?charset=utf8mb4&parseTime=True&loc=Local",
 	)
 
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
