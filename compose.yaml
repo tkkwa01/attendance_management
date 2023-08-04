@@ -18,8 +18,8 @@ services:
       - '33065:3306'
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: attendance_management
-      MYSQL_USER: attendance_management
+      MYSQL_DATABASE: attendance-management
+      MYSQL_USER: attendance-management
       MYSQL_PASSWORD: password
       TZ: 'Asia/Tokyo'
     volumes:

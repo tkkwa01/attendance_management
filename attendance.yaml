@@ -3,6 +3,8 @@ info:
   version: 1.0.0
   title: Attendance Management System
   description: An API for managing employee attendance
+servers:
+  - url: http://localhost:8080
 paths:
   /employees:
     get:
