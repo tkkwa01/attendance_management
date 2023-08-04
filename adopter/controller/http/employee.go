@@ -22,6 +22,8 @@ func NewEmployee(r *router.Router, inputFactory usecase.EmployeeInputFactory, ou
 
 	r.Group("employee", nil, func(r *router.Router) {
 		r.Post("", handler.Create)
+		r.Get("", handler.GetEmployee)
+		r.Put("", handler.Update)
 	})
 }
 
@@ -40,9 +42,26 @@ func (e employee) Create(ctx context.Context, c *gin.Context) error {
 
 // get employee by number
 func (e employee) GetEmployee(ctx context.Context, c *gin.Context) error {
-	number := c.Query("number")
+	numberStr := c.Query("number")
+	number, err := stringToUint(numberStr)
+	if err != nil {
+		return err
+	}
 	outputPort := e.outputFactory(c)
 	inputPort := e.inputFactory(outputPort)
 
 	return inputPort.GetByID(ctx, number)
+}
+
+func (e employee) Update(ctx context.Context, c *gin.Context) error {
+	var req request.UpdateEmployee
+
+	if !bind(c, &req) {
+		return nil
+	}
+
+	outputPort := e.outputFactory(c)
+	inputPort := e.inputFactory(outputPort)
+
+	return inputPort.Update(ctx, &req)
 }

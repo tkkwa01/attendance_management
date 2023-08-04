@@ -12,7 +12,7 @@ type Employees struct {
 	ID             uint   `json:"id"`
 	Name           string `json:"name"`
 	PhoneNumber    string `json:"phone_number"`
-	EmployeeNumber uint   `json:"employee_number"` //GetByIDとかのときのキー
+	EmployeeNumber uint   `json:"employee_number" gorm:"unique"`
 }
 
 func NewEmployee(ctx context.Context, req *request.CreateEmployee) (*Employees, error) {
