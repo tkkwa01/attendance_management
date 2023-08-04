@@ -7,10 +7,10 @@ import (
 )
 
 type EmployeeInputPort interface {
-	Create() error
-	GetByID() error
-	Update() error
-	Delete() error
+	Create(ctx context.Context, req *request.CreateEmployee) error
+	//GetByID() error
+	//Update() error
+	//Delete() error
 }
 
 type EmployeeOutputPort interface {
@@ -28,6 +28,17 @@ type EmployeeRepository interface {
 type employee struct {
 	outputPort   EmployeeOutputPort
 	EmployeeRepo EmployeeRepository
+}
+
+type EmployeeInputFactory func(outputPort EmployeeOutputPort) EmployeeInputPort
+
+func NewEmployeeInputFactory(er EmployeeRepository) EmployeeInputFactory {
+	return func(o EmployeeOutputPort) EmployeeInputPort {
+		return &employee{
+			outputPort:   o,
+			EmployeeRepo: er,
+		}
+	}
 }
 
 func (e employee) Create(ctx context.Context, req *request.CreateEmployee) error {
