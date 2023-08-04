@@ -15,6 +15,13 @@ type EmployeeInputPort interface {
 
 type EmployeeOutputPort interface{
 	Create()error
+	GetByID()error
+	Update()error
+	Delete()error
+}
+
+type EmployeeRepository interface{
+
 }
 
 type employee struct{
@@ -23,6 +30,6 @@ type employee struct{
 }
 
 func(e employee) Create(ctx context.Context, req *request.CreateEmployee) error {
-	newEmployee, err := domain.NewEmployee
+	newEmployee, err := domain.NewEmployee(ctx, req)
 	err =
 }
