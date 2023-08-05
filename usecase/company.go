@@ -6,21 +6,21 @@ import (
 	"attendance-management/resource/request"
 )
 
-type companyInputPort interface {
+type CompanyInputPort interface {
 	Create(ctx context.Context, req *request.CreateCompany) error
 	GetByID(ctx context.Context, number uint) error
 	Update(ctx context.Context, req *request.UpdateCompany) error
 	Delete(ctx context.Context, number uint) error
 }
 
-type companyOutputPort interface {
+type CompanyOutputPort interface {
 	Create(id uint) error
 	GetByID(res *domain.Companies) error
 	Update(res *domain.Companies) error
 	Delete() error
 }
 
-type companyRepository interface {
+type CompanyRepository interface {
 	Create(ctx context.Context, company *domain.Companies) (uint, error)
 	GetByID(ctx context.Context, number uint) (*domain.Companies, error)
 	Update(ctx context.Context, company *domain.Companies) error
@@ -29,14 +29,14 @@ type companyRepository interface {
 }
 
 type company struct {
-	outputPort  companyOutputPort
-	companyRepo companyRepository
+	outputPort  CompanyOutputPort
+	companyRepo CompanyRepository
 }
 
-type companyInputFactory func(outputPort companyOutputPort) companyInputPort
+type CompanyInputFactory func(outputPort CompanyOutputPort) CompanyInputPort
 
-func NewCompanyInputFactory(cr companyRepository) companyInputFactory {
-	return func(o companyOutputPort) companyInputPort {
+func NewCompanyInputFactory(cr CompanyRepository) CompanyInputFactory {
+	return func(o CompanyOutputPort) CompanyInputPort {
 		return &company{
 			outputPort:  o,
 			companyRepo: cr,
