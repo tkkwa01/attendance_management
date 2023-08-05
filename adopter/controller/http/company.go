@@ -10,11 +10,11 @@ import (
 )
 
 type company struct {
-	inputFactory  usecase.EmployeeInputFactory
-	outputFactory func(c *gin.Context) usecase.EmployeeOutputPort
+	inputFactory  usecase.CompanyInputFactory
+	outputFactory func(c *gin.Context) usecase.CompanyOutputPort
 }
 
-func NewCompany(r *router.Router, inputFactory usecase.EmployeeInputFactory, outputFactory presenter.EmployeeOutputFactory) {
+func NewCompany(r *router.Router, inputFactory usecase.CompanyInputFactory, outputFactory presenter.CompanyOutputFactory) {
 	handler := company{
 		inputFactory:  inputFactory,
 		outputFactory: outputFactory,
@@ -22,7 +22,7 @@ func NewCompany(r *router.Router, inputFactory usecase.EmployeeInputFactory, out
 
 	r.Group("company", nil, func(r *router.Router) {
 		r.Post("", handler.Create)
-		r.Get("", handler.GetEmployee)
+		r.Get("", handler.GetCompany)
 		r.Put("", handler.Update)
 		r.Delete("", handler.Delete)
 	})
@@ -31,7 +31,7 @@ func NewCompany(r *router.Router, inputFactory usecase.EmployeeInputFactory, out
 func (co company) Create(ctx context.Context, c *gin.Context) error {
 	var req request.CreateCompany
 
-	if !bind(co, &req) {
+	if !bind(c, &req) {
 		return nil
 	}
 
@@ -39,4 +39,42 @@ func (co company) Create(ctx context.Context, c *gin.Context) error {
 	inputPort := co.inputFactory(outputPort)
 
 	return inputPort.Create(ctx, &req)
+}
+
+// get company by number
+func (co company) GetCompany(ctx context.Context, c *gin.Context) error {
+	numberStr := c.Query("number")
+	number, err := stringToUint(numberStr)
+	if err != nil {
+		return err
+	}
+	outputPort := co.outputFactory(c)
+	inputPort := co.inputFactory(outputPort)
+
+	return inputPort.GetByID(ctx, number)
+}
+
+func (co company) Update(ctx context.Context, c *gin.Context) error {
+	var req request.UpdateCompany
+
+	if !bind(c, &req) {
+		return nil
+	}
+
+	outputPort := co.outputFactory(c)
+	inputPort := co.inputFactory(outputPort)
+
+	return inputPort.Update(ctx, &req)
+}
+
+func (co company) Delete(ctx context.Context, c *gin.Context) error {
+	numberStr := c.Query("number")
+	number, err := stringToUint(numberStr)
+	if err != nil {
+		return err
+	}
+	outputPort := co.outputFactory(c)
+	inputPort := co.inputFactory(outputPort)
+
+	return inputPort.Delete(ctx, number)
 }
