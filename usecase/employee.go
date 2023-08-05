@@ -46,7 +46,7 @@ func NewEmployeeInputFactory(er EmployeeRepository) EmployeeInputFactory {
 
 func (e employee) Create(ctx context.Context, req *request.CreateEmployee) error {
 	newEmployee, err := domain.NewEmployee(ctx, req)
-	// req.EmployeeNumberをkeyにしてdogが存在するか確認
+	// req.EmployeeNumberをkeyにしてemployeeが存在するか確認
 	err = e.EmployeeRepo.NumberExist(ctx, req.EmployeeNumber)
 	if err == nil {
 		return ctx.Error().BadRequest("employee already exist")
