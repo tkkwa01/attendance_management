@@ -25,7 +25,7 @@ type EmploymentRepository interface {
 	Create(ctx context.Context, employment *domain.Employments) (uint, error)
 	GetByID(ctx context.Context, number uint) (*domain.Employments, error)
 	Update(ctx context.Context, employment *domain.Employments) error
-	IDExist(ctx context.Context, id uint) error
+	NumberExist(ctx context.Context, id uint) error
 	Delete(ctx context.Context, number uint) error
 }
 
@@ -47,8 +47,8 @@ func NewEmploymentInputFactory(er EmploymentRepository) EmploymentInputFactory {
 
 func (e employment) Create(ctx context.Context, req *request.CreateEmployment) error {
 	res, err := domain.NewEmployment(ctx, req)
-	// req.IDをkeyにしてemploymentが存在するか確認
-	err = e.employmentRepo.IDExist(ctx, req.ID)
+	// req.EmploymentNumberをkeyにしてemploymentが存在するか確認
+	err = e.employmentRepo.NumberExist(ctx, req.EmploymentNumber)
 	if err == nil {
 		return ctx.Error().BadRequest("employment already exist")
 	}
