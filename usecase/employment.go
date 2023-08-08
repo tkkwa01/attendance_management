@@ -71,7 +71,7 @@ func (e employment) GetByID(ctx context.Context, number uint) error {
 }
 
 func (e employment) Update(ctx context.Context, req *request.UpdateEmployment) error {
-	employment, err := e.employmentRepo.GetByID(ctx, req.ID)
+	employment, err := e.employmentRepo.GetByID(ctx, req.EmploymentNumber)
 	if err != nil {
 		return err
 	}
