@@ -37,6 +37,7 @@ func Execute() {
 	employeeRepository := mysqlRepository.NewEmployee()
 	companyRepository := mysqlRepository.NewCompany()
 	employmentRepository := mysqlRepository.NewEmployment()
+	positionRepository := mysqlRepository.NewPosition()
 
 	//usecase
 	employeeInputFactory := usecase.NewEmployeeInputFactory(employeeRepository)
@@ -45,11 +46,14 @@ func Execute() {
 	companyOutputFactory := presenter.NewCompanyOutputFactory()
 	employmentInputFactory := usecase.NewEmploymentInputFactory(employmentRepository)
 	employmentOutputFactory := presenter.NewEmploymentOutputFactory()
+	positionInputFactory := usecase.NewPositionInputFactory(positionRepository)
+	positionOutputFactory := presenter.NewPositionOutputFactory()
 
 	//controller
 	httpController.NewEmployee(r, employeeInputFactory, employeeOutputFactory)
 	httpController.NewCompany(r, companyInputFactory, companyOutputFactory)
 	httpController.NewEmployment(r, employmentInputFactory, employmentOutputFactory)
+	httpController.NewPosition(r, positionInputFactory, positionOutputFactory)
 	//serve
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%s", config.Env.Port),
