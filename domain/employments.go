@@ -18,6 +18,10 @@ type Employments struct {
 	EndDate          time.Time `json:"end_date"`
 	SalaryTypeID     uint      `json:"salary_type_id"`
 	EmploymentNumber uint      `json:"employment_number"`
+	//Employees        Employees   `gorm:"foreignKey:EmployeeID"`
+	//Companies        Companies   `gorm:"foreignKey:CompanyID"`
+	//Positions        Positions   `gorm:"foreignKey:PositionID"`
+	//SalaryTypes      SalaryTypes `gorm:"foreignKey:SalaryTypeID"`
 }
 
 func NewEmployment(ctx context.Context, req *request.CreateEmployment) (*Employments, error) {
