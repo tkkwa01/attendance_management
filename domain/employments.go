@@ -17,7 +17,7 @@ type Employments struct {
 	StartDate        time.Time `json:"start_date"`
 	EndDate          time.Time `json:"end_date"`
 	SalaryTypeID     uint      `json:"salary_type_id"`
-	EmploymentNumber uint      `json:"employment_number"`
+	EmploymentNumber uint      `json:"employment_number" gorm:"unique"`
 	//Employees        Employees   `gorm:"foreignKey:EmployeeID"`
 	//Companies        Companies   `gorm:"foreignKey:CompanyID"`
 	//Positions        Positions   `gorm:"foreignKey:PositionID"`

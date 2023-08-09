@@ -11,7 +11,7 @@ type SalaryTypes struct {
 	gorm.Model
 	ID               uint   `json:"id"`
 	Type             string `json:"type"`
-	SalaryTypeNumber uint   `json:"salary_type_number"`
+	SalaryTypeNumber uint   `json:"salary_type_number" gorm:"unique"`
 }
 
 func NewSalaryType(ctx context.Context, req *request.CreateSalaryType) (*SalaryTypes, error) {

@@ -11,7 +11,7 @@ type Positions struct {
 	gorm.Model
 	ID             uint   `json:"id"`
 	Type           string `json:"type"`
-	PositionNumber uint   `json:"position_number"`
+	PositionNumber uint   `json:"position_number" gorm:"unique"`
 }
 
 func NewPosition(ctx context.Context, req *request.CreatePosition) (*Positions, error) {
