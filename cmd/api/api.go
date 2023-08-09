@@ -39,6 +39,7 @@ func Execute() {
 	employmentRepository := mysqlRepository.NewEmployment()
 	positionRepository := mysqlRepository.NewPosition()
 	salaryTypeRepository := mysqlRepository.NewSalaryType()
+	attendanceRepository := mysqlRepository.NewAttendance()
 
 	//usecase
 	employeeInputFactory := usecase.NewEmployeeInputFactory(employeeRepository)
@@ -51,6 +52,8 @@ func Execute() {
 	positionOutputFactory := presenter.NewPositionOutputFactory()
 	salaryTypeInputFactory := usecase.NewSalaryTypeInputFactory(salaryTypeRepository)
 	salaryTypeOutputFactory := presenter.NewSalaryTypeOutputFactory()
+	attendanceInputFactory := usecase.NewAttendanceInputFactory(attendanceRepository)
+	attendanceOutputFactory := presenter.NewAttendanceOutputFactory()
 
 	//controller
 	httpController.NewEmployee(r, employeeInputFactory, employeeOutputFactory)
@@ -58,6 +61,7 @@ func Execute() {
 	httpController.NewEmployment(r, employmentInputFactory, employmentOutputFactory)
 	httpController.NewPosition(r, positionInputFactory, positionOutputFactory)
 	httpController.NewSalaryType(r, salaryTypeInputFactory, salaryTypeOutputFactory)
+	httpController.NewAttendance(r, attendanceInputFactory, attendanceOutputFactory)
 	//serve
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%s", config.Env.Port),
