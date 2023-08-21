@@ -1,0 +1,428 @@
+openapi: 3.0.0
+info:
+  title: attendance_management
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: employees
+  - name: companies
+  - name: employments
+  - name: positions
+  - name: salary_types
+  - name: attendance
+paths:
+  /employee:
+    post:
+      tags:
+        - employees
+      summary: create_employee
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: mani
+                phone_number: 080-0420-0719
+                employee_number: 3
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - employees
+      summary: get_employee_info
+      parameters:
+        - name: number
+          in: query
+          schema:
+            type: integer
+          example: '3'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    put:
+      tags:
+        - employees
+      summary: update_employee
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: mani-chan
+                phone_number: 080-0420-0719
+                employee_number: 3
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - employees
+      summary: delete_employee
+      parameters:
+        - name: number
+          in: query
+          schema:
+            type: integer
+          example: '3'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /company:
+    post:
+      tags:
+        - companies
+      summary: create_company
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: moka-company
+                company_number: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - companies
+      summary: get_company_info
+      parameters:
+        - name: number
+          in: query
+          schema:
+            type: integer
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    put:
+      tags:
+        - companies
+      summary: update_employee
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: moka-chan-company
+                company_number: 1
+      parameters:
+        - name: ''
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - companies
+      summary: delete_company
+      parameters:
+        - name: number
+          in: query
+          schema:
+            type: integer
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /employment:
+    post:
+      tags:
+        - employments
+      summary: create_employment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                employee_id: 1
+                company_id: 1
+                position_id: 1
+                start_date: '2023-08-06T12:34:56Z'
+                end_date: '2023-12-31T23:59:59Z'
+                salary_type_id: 1
+                employment_number: 987654321
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - employments
+      summary: get_employment
+      parameters:
+        - name: number
+          in: query
+          schema:
+            type: integer
+          example: '987654321'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    put:
+      tags:
+        - employments
+      summary: update_employment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                id: 1
+                employee_id: 1
+                company_id: 1
+                position_id: 1
+                start_date: '2023-08-06T12:34:56Z'
+                end_date: '2024-12-31T23:59:59Z'
+                salary_type_id: 1
+                employment_number: 987654321
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - employments
+      summary: delete_employment
+      parameters:
+        - name: number
+          in: query
+          schema:
+            type: integer
+          example: '987654321'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /position:
+    post:
+      tags:
+        - positions
+      summary: create_position
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                type: monthly_salary
+                position_number: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - positions
+      summary: get_position_info
+      parameters:
+        - name: number
+          in: query
+          schema:
+            type: integer
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    put:
+      tags:
+        - positions
+      summary: update_position
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                type: monthly_salary
+                position_number: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - positions
+      summary: New Request
+      parameters:
+        - name: number
+          in: query
+          schema:
+            type: integer
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /salary_type:
+    post:
+      tags:
+        - salary_types
+      summary: create_salary_type
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                type: monthly_salary
+                salary_type_number: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - salary_types
+      summary: get_salary_type
+      parameters:
+        - name: number
+          in: query
+          schema:
+            type: integer
+          example: '0'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    put:
+      tags:
+        - salary_types
+      summary: New Request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                type: hourly_salary
+                salary_type_number: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - salary_types
+      summary: New Request
+      parameters:
+        - name: number
+          in: query
+          schema:
+            type: integer
+          example: '0'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /attendance:
+    post:
+      tags:
+        - attendance
+      summary: create_attendance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                employment_id: 123
+                date: '2023-08-09T00:00:00Z'
+                check_in_time: '2023-08-09T09:00:00Z'
+                check_out_time: '2023-08-09T18:00:00Z'
+                attendance_number: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - attendance
+      summary: get_attendance
+      parameters:
+        - name: number
+          in: query
+          schema:
+            type: integer
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    put:
+      tags:
+        - attendance
+      summary: New Request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                employment_id: 123
+                date: '2023-08-09T00:00:00Z'
+                check_in_time: '2023-08-09T09:30:00Z'
+                check_out_time: '2023-08-09T18:30:00Z'
+                attendance_number: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - attendance
+      summary: New Request
+      parameters:
+        - name: number
+          in: query
+          schema:
+            type: integer
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
