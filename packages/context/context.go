@@ -14,6 +14,7 @@ type Context interface {
 	Validate(i interface{}) error
 	DB() *gorm.DB
 	RequestID() string
+	Transaction(fn func(ctx Context) error) error
 }
 
 type ctx struct {

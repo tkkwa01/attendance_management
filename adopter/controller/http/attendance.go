@@ -20,7 +20,8 @@ func NewAttendance(r *router.Router, inputFactory usecase.AttendanceInputFactory
 	}
 
 	r.Group("attendance", nil, func(r *router.Router) {
-		r.Post("", handler.Create)
+		r.Post("in", handler.Create)
+		r.Put("out", handler.Update)
 		r.Get("", handler.GetAttendance)
 		r.Put("", handler.Update)
 		r.Delete("", handler.Delete)
