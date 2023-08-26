@@ -76,19 +76,30 @@ func (a attendance) Update(ctx context.Context, req *request.UpdateAttendance) e
 		return err
 	}
 
-	if req.Date != (time.Time{}) {
-		attendance.Date = req.Date
-	}
+	err = ctx.Transaction(func(ctx context.Context) error {
 
-	if req.CheckInTime != (time.Time{}) {
-		attendance.CheckInTime = req.CheckInTime
-	}
+		oldID := req.AttendanceNumber
+		err = a.attendanceRepo.Delete(ctx, oldID)
+		if err != nil {
+			return err
+		}
 
-	if req.CheckOutTime != (time.Time{}) {
-		attendance.CheckOutTime = req.CheckOutTime
-	}
+		newAttendance, err := domain.NewAttendance(ctx, (*request.CreateAttendance)(req))
+		if err != nil {
+			return err
+		}
 
-	err = a.attendanceRepo.Update(ctx, attendance)
+		_, err = a.attendanceRepo.Create(ctx, newAttendance)
+		if err != nil {
+			return err
+		}
+
+		err = a.attendanceRepo.Update(ctx, attendance)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
 	if err != nil {
 		return err
 	}
@@ -103,4 +114,20 @@ func (a attendance) Delete(ctx context.Context, number uint) error {
 	}
 
 	return a.outputPort.Delete()
+}
+
+func (a attendance) CheckOut(ctx context.Context, number uint) error {
+	attendance, err := a.attendanceRepo.GetByID(ctx, number)
+	if err != nil {
+		return err
+	}
+
+	attendance.CheckOutTime = time.Now()
+
+	err = a.attendanceRepo.Update(ctx, attendance)
+	if err != nil {
+		return err
+	}
+
+	return a.outputPort.Update(attendance)
 }
