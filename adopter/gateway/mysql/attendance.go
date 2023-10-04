@@ -4,6 +4,8 @@ import (
 	"attendance-management/domain"
 	"attendance-management/packages/context"
 	"attendance-management/usecase"
+	"fmt"
+	"time"
 )
 
 type attendance struct{}
@@ -63,5 +65,33 @@ func (a attendance) Delete(ctx context.Context, number uint) error {
 	if res.RowsAffected == 0 {
 		return dbError(res.Error)
 	}
+	return nil
+}
+
+func (a attendance) CheckOut(ctx context.Context, number uint) error {
+	db := ctx.DB()
+	// 出席記録を検索
+	var targetAttendance domain.Attendance
+	res := db.Where("attendance_number = ?", number).First(&targetAttendance)
+	if res.Error != nil {
+		return dbError(res.Error)
+	}
+
+	if res.RowsAffected == 0 {
+		return dbError(fmt.Errorf("No attendance record found"))
+	}
+
+	// チェックアウト時間を追加
+	targetAttendance.CheckOutTime = time.Now()
+
+	// 更新を保存
+	res = db.Save(&targetAttendance)
+	if res.Error != nil {
+		return dbError(res.Error)
+	}
+	if res.RowsAffected == 0 {
+		return dbError(fmt.Errorf("Failed to update attendance record"))
+	}
+
 	return nil
 }

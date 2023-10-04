@@ -2,46 +2,29 @@ package context
 
 import (
 	"attendance-management/packages/errors"
-	"attendance-management/packages/validate"
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type Context interface {
-	Error() *errors.Error
-	Validate(i interface{}) error
-	DB() *gorm.DB
 	RequestID() string
+	Authenticated() bool
+	UID() uint
+	Validate(request interface{}) (invalid bool)
+	FieldError(fieldName string, message string)
+	IsInValid() bool
+	ValidationError() error
+	DB() *gorm.DB
 	Transaction(fn func(ctx Context) error) error
 }
 
 type ctx struct {
-	err   *errors.Error
+	id    string
+	verr  *errors.Error
 	getDB func() *gorm.DB
 	db    *gorm.DB
-	id    string
 	uid   uint
-}
-
-func (c *ctx) Error() *errors.Error {
-	if c.err == nil {
-		c.err = errors.New()
-	}
-	return c.err
-}
-
-func (c *ctx) Validate(i interface{}) error {
-	err := validate.Validate(i)
-	if err != nil {
-		if ve, ok := err.(validator.ValidationErrors); ok {
-			for _, err := range ve {
-				c.Error().AddError(err.Field(), err.Tag())
-			}
-		}
-	}
-	return err
 }
 
 func New(c *gin.Context, getDB func() *gorm.DB) Context {
@@ -58,19 +41,22 @@ func New(c *gin.Context, getDB func() *gorm.DB) Context {
 		}
 	}
 
-	var err *errors.Error
-	if errInterface, ok := c.Get("error"); ok {
-		err = errInterface.(*errors.Error)
-	}
-
 	return &ctx{
 		id:    requestID,
+		verr:  errors.NewValidation(),
 		getDB: getDB,
 		uid:   uid,
-		err:   err,
 	}
 }
 
-func (c *ctx) RequestID() string {
+func (c ctx) RequestID() string {
 	return c.id
+}
+
+func (c ctx) Authenticated() bool {
+	return c.uid != 0
+}
+
+func (c ctx) UID() uint {
+	return c.uid
 }

@@ -3,19 +3,23 @@ package usecase
 import (
 	"attendance-management/domain"
 	"attendance-management/packages/context"
-	"attendance-management/resource/request"
+	request "attendance-management/resource/request"
 	"time"
 )
 
-type AttendanceInputPort interface {
-	Create(ctx context.Context, req *request.CreateAttendance) error
-	GetByID(ctx context.Context, number uint) error
-	Update(ctx context.Context, req *request.UpdateAttendance) error
-	Delete(ctx context.Context, number uint) error
-}
+type (
+	AttendanceInputPort interface {
+		CheckIn(ctx context.Context, req *request.CreateAttendance) error
+		CheckOut(ctx context.Context, number uint) error
+		GetByID(ctx context.Context, number uint) error
+		Update(ctx context.Context, req *request.UpdateAttendance) error
+		Delete(ctx context.Context, number uint) error
+	}
+)
 
 type AttendanceOutputPort interface {
-	Create(id uint) error
+	CheckIn(id uint) error
+	CheckOut(res *domain.Attendance) error
 	GetByID(res *domain.Attendance) error
 	Update(res *domain.Attendance) error
 	Delete() error
@@ -27,6 +31,7 @@ type AttendanceRepository interface {
 	Update(ctx context.Context, attendance *domain.Attendance) error
 	NumberExist(ctx context.Context, number uint) error
 	Delete(ctx context.Context, number uint) error
+	CheckOut(ctx context.Context, number uint) error
 }
 
 type attendance struct {
@@ -45,20 +50,9 @@ func NewAttendanceInputFactory(ar AttendanceRepository) AttendanceInputFactory {
 	}
 }
 
-func (a attendance) Create(ctx context.Context, req *request.CreateAttendance) error {
-	res, err := domain.NewAttendance(ctx, req)
-	// req.AttendanceNumberをkeyにしてattendanceが存在するか確認
-	err = a.attendanceRepo.NumberExist(ctx, req.AttendanceNumber)
-	if err == nil {
-		return ctx.Error().BadRequest("attendance already exist")
-	}
-
-	id, err := a.attendanceRepo.Create(ctx, res)
-	if err != nil {
-		return err
-	}
-
-	return a.outputPort.Create(id)
+func (a attendance) CheckIn(ctx context.Context, req *request.CreateAttendance) error {
+	//TODO implement this
+	return nil
 }
 
 func (a attendance) GetByID(ctx context.Context, number uint) error {
@@ -84,7 +78,7 @@ func (a attendance) Update(ctx context.Context, req *request.UpdateAttendance) e
 			return err
 		}
 
-		newAttendance, err := domain.NewAttendance(ctx, (*request.CreateAttendance)(req))
+		newAttendance, err := domain.NewAttendance((*request.CreateAttendance)(req))
 		if err != nil {
 			return err
 		}

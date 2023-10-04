@@ -2,7 +2,7 @@ package domain
 
 import (
 	"attendance-management/packages/context"
-	"attendance-management/packages/validate"
+	"attendance-management/packages/validation"
 	"attendance-management/resource/request"
 	"gorm.io/gorm"
 )
@@ -19,7 +19,7 @@ func NewPosition(ctx context.Context, req *request.CreatePosition) (*Positions, 
 		Type:           req.Type,
 		PositionNumber: req.PositionNumber,
 	}
-	err := validate.Validate(position)
+	err := validation.Validate(position)
 	if err != nil {
 		return nil, err
 	}

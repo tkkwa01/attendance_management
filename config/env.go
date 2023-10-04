@@ -10,8 +10,12 @@ import (
 var Env EnvType
 
 type EnvType struct {
-	Port string `default:"8080"`
-	DB   struct {
+	Port string `default:"8000"`
+	App  struct {
+		Secret string `required:"true"`
+		URL    string `required:"true"`
+	}
+	DB struct {
 		Socket   string
 		Host     string
 		Port     uint
@@ -19,6 +23,21 @@ type EnvType struct {
 		Password string `required:"true"`
 		Name     string `required:"true"`
 	}
+	SMTP struct {
+		Host     string `required:"true"`
+		Port     string `required:"true"`
+		User     string `required:"true"`
+		Password string `required:"true"`
+	}
+	Mail struct {
+		From string `required:"true"`
+		Name string `required:"true"`
+	}
+	Gcp struct {
+		CredentialPath string `required:"true" split_words:"true"`
+		Bucket         string `required:"true"`
+	}
+	Origins string `split_words:"true"`
 }
 
 func fileExists(path string) bool {

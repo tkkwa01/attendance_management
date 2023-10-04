@@ -37,3 +37,8 @@ func (a *attendance) Delete() error {
 	a.c.JSON(200, "")
 	return nil
 }
+
+func (a *attendance) CheckOut(res *domain.Attendance) error {
+	//TODO implement me
+	panic("implement me")
+}
