@@ -8,6 +8,7 @@ import (
 	"attendance-management/resource/mail_body"
 	"attendance-management/resource/request"
 	"attendance-management/resource/response"
+	jwt "github.com/ken109/gin-jwt"
 	"net/http"
 )
 
@@ -28,6 +29,9 @@ type EmployeeOutputPort interface {
 	Update(res *domain.Employees) error
 	Delete() error
 	ResetPasswordRequest(res *response.UserResetPasswordRequest) error
+	ResetPassword() error
+	Login(isSession bool, res *response.UserLogin) error
+	RefreshToken(isSession bool, res *response.UserLogin) error
 }
 
 type EmployeeRepository interface {
@@ -37,6 +41,8 @@ type EmployeeRepository interface {
 	NumberExist(ctx context.Context, number string) (bool, error)
 	Delete(ctx context.Context, number uint) error
 	GetByEmail(ctx context.Context, email string) (*domain.Employees, error)
+	EmailExists(ctx context.Context, email string) (bool, error)
+	GetByRecoveryToken(ctx context.Context, recoveryToken string) (*domain.Employees, error)
 }
 
 type employee struct {
@@ -169,16 +175,57 @@ func (e employee) ResetPasswordRequest(ctx context.Context, req *request.Employe
 }
 
 func (e employee) ResetPassword(ctx context.Context, req *request.EmployeeResetPassword) error {
-	//TODO implement me
-	panic("implement me")
+	user, err := e.EmployeeRepo.GetByRecoveryToken(ctx, req.RecoveryToken)
+	if err != nil {
+		return err
+	}
+
+	err = user.ResetPassword(ctx, req)
+	if err != nil {
+		return err
+	}
+
+	if ctx.IsInValid() {
+		return ctx.ValidationError()
+	}
+
+	return e.EmployeeRepo.Update(ctx, user)
 }
 
 func (e employee) Login(ctx context.Context, req *request.EmployeeLogin) error {
-	//TODO implement me
-	panic("implement me")
+	user, err := e.EmployeeRepo.GetByEmail(ctx, req.Email)
+	if err != nil {
+		return err
+	}
+
+	if user.Password.IsValid(req.Password) {
+		var res response.UserLogin
+
+		res.Token, res.RefreshToken, err = jwt.IssueToken(config.UserRealm, jwt.Claims{
+			"uid": user.ID,
+		})
+		if err != nil {
+			return errors.NewUnexpected(err)
+		}
+		return e.outputPort.Login(req.Session, &res)
+	}
+	return e.outputPort.Login(req.Session, nil)
 }
 
 func (e employee) RefreshToken(req *request.EmployeeRefreshToken) error {
-	//TODO implement me
-	panic("implement me")
+	var (
+		res response.UserLogin
+		ok  bool
+		err error
+	)
+
+	ok, res.Token, res.RefreshToken, err = jwt.RefreshToken(config.UserRealm, req.RefreshToken)
+	if err != nil {
+		return errors.NewUnexpected(err)
+	}
+
+	if !ok {
+		return nil
+	}
+	return e.outputPort.RefreshToken(req.Session, &res)
 }
