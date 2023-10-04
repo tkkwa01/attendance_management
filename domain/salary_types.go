@@ -2,7 +2,7 @@ package domain
 
 import (
 	"attendance-management/packages/context"
-	"attendance-management/packages/validate"
+	"attendance-management/packages/validation"
 	"attendance-management/resource/request"
 	"gorm.io/gorm"
 )
@@ -18,7 +18,7 @@ func NewSalaryType(ctx context.Context, req *request.CreateSalaryType) (*SalaryT
 	salaryType := &SalaryTypes{
 		Type: req.Type,
 	}
-	err := validate.Validate(salaryType)
+	err := validation.Validate(salaryType)
 	if err != nil {
 		return nil, err
 	}

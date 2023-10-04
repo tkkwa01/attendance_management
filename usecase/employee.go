@@ -60,6 +60,16 @@ func (e employee) Create(ctx context.Context, req *request.CreateEmployee) error
 	return e.outputPort.Create(id)
 }
 
+// q:なぜ引数でcontextを持たせている？
+// a:contextを持たせることで、contextの中にerrorを持たせることができる
+// これにより、errorを返すことができる
+// また、contextを持たせることで、contextの中にDBを持たせることができる
+// これにより、DBを呼び出すことができる
+// また、contextを持たせることで、contextの中にuidを持たせることができる
+// これにより、uidを呼び出すことができる
+// また、contextを持たせることで、contextの中にrequestIDを持たせることができる
+// これにより、requestIDを呼び出すことができる
+
 // make getByID code
 func (e employee) GetByID(ctx context.Context, number uint) error {
 	// repositoryのGetByIDを呼び出す

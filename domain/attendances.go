@@ -1,8 +1,7 @@
 package domain
 
 import (
-	"attendance-management/packages/context"
-	"attendance-management/packages/validate"
+	"attendance-management/packages/validation"
 	"attendance-management/resource/request"
 	"time"
 )
@@ -16,17 +15,21 @@ type Attendance struct {
 	CheckInTime      time.Time `json:"check_in_time"`
 	CheckOutTime     time.Time `json:"check_out_time"`
 	AttendanceNumber uint      `json:"attendance_number" gorm:"unique"`
+	latitude         float64   `json:"latitude"`
+	longitude        float64   `json:"longitude"`
 }
 
-func NewAttendance(ctx context.Context, req *request.CreateAttendance) (*Attendance, error) {
+func NewAttendance(req *request.CreateAttendance) (*Attendance, error) {
 	attendance := &Attendance{
 		EmploymentID:     req.EmploymentID,
 		Date:             req.Date,
 		CheckInTime:      req.CheckInTime,
 		CheckOutTime:     req.CheckOutTime,
 		AttendanceNumber: req.AttendanceNumber,
+		latitude:         req.Latitude,
+		longitude:        req.Longitude,
 	}
-	err := validate.Validate(attendance)
+	err := validation.Validate(attendance)
 	if err != nil {
 		return nil, err
 	}

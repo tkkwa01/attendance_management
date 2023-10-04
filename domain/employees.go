@@ -2,7 +2,7 @@ package domain
 
 import (
 	"attendance-management/packages/context"
-	"attendance-management/packages/validate"
+	"attendance-management/packages/validation"
 	"attendance-management/resource/request"
 	"gorm.io/gorm"
 )
@@ -21,7 +21,7 @@ func NewEmployee(ctx context.Context, req *request.CreateEmployee) (*Employees, 
 		PhoneNumber:    req.PhoneNumber,
 		EmployeeNumber: req.EmployeeNumber,
 	}
-	err := validate.Validate(employee)
+	err := validation.Validate(employee)
 	if err != nil {
 		return nil, err
 	}

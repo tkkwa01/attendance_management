@@ -2,7 +2,7 @@ package domain
 
 import (
 	"attendance-management/packages/context"
-	"attendance-management/packages/validate"
+	"attendance-management/packages/validation"
 	"attendance-management/resource/request"
 	"gorm.io/gorm"
 )
@@ -19,7 +19,7 @@ func NewCompany(ctx context.Context, req *request.CreateCompany) (*Companies, er
 		Name:          req.Name,
 		CompanyNumber: req.CompanyNumber,
 	}
-	err := validate.Validate(company)
+	err := validation.Validate(company)
 	if err != nil {
 		return nil, err
 	}
