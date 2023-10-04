@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"attendance-management/domain"
+	"attendance-management/domain/vobj"
 	"attendance-management/packages/context"
 	"attendance-management/usecase"
 )
@@ -68,6 +69,27 @@ func (e employee) GetByEmail(ctx context.Context, email string) (*domain.Employe
 
 	var dest domain.Employees
 	err := db.Where(&domain.Employees{Email: email}).First(&dest).Error
+	if err != nil {
+		return nil, dbError(err)
+	}
+	return &dest, nil
+}
+
+func (e employee) EmailExists(ctx context.Context, email string) (bool, error) {
+	db := ctx.DB()
+
+	var count int64
+	if err := db.Model(&domain.Employees{}).Where(&domain.Employees{Email: email}).Count(&count).Error; err != nil {
+		return false, dbError(err)
+	}
+	return count > 0, nil
+}
+
+func (e employee) GetByRecoveryToken(ctx context.Context, recoveryToken string) (*domain.Employees, error) {
+	db := ctx.DB()
+
+	var dest domain.Employees
+	err := db.Where(&domain.Employees{RecoveryToken: vobj.NewRecoveryToken(recoveryToken)}).First(&dest).Error
 	if err != nil {
 		return nil, dbError(err)
 	}
