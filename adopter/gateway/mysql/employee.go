@@ -21,15 +21,14 @@ func (e employee) Create(ctx context.Context, employee *domain.Employees) (uint,
 	return employee.ID, nil
 }
 
-func (e employee) NumberExist(ctx context.Context, number uint) error {
+func (e employee) NumberExist(ctx context.Context, number string) (bool, error) {
 	db := ctx.DB()
 
-	var employee domain.Employees
-	err := db.Where("number = ?", number).First(&employee).Error
-	if err != nil {
-		return dbError(err)
+	var count int64
+	if err := db.Model(&domain.Employees{}).Where(&domain.Employees{PhoneNumber: number}).Count(&count).Error; err != nil {
+		return false, dbError(err)
 	}
-	return nil
+	return count > 0, nil
 }
 
 func (e employee) GetByID(ctx context.Context, number uint) (*domain.Employees, error) {
@@ -62,4 +61,15 @@ func (e employee) Delete(ctx context.Context, number uint) error {
 		return res.Error
 	}
 	return nil
+}
+
+func (e employee) GetByEmail(ctx context.Context, email string) (*domain.Employees, error) {
+	db := ctx.DB()
+
+	var dest domain.Employees
+	err := db.Where(&domain.Employees{Email: email}).First(&dest).Error
+	if err != nil {
+		return nil, dbError(err)
+	}
+	return &dest, nil
 }
