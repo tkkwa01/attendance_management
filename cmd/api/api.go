@@ -2,6 +2,7 @@ package api
 
 import (
 	httpController "attendance-management/adopter/controller/http"
+	"attendance-management/adopter/gateway/mail"
 	mysqlRepository "attendance-management/adopter/gateway/mysql"
 	"attendance-management/adopter/presenter"
 	"attendance-management/config"
@@ -33,6 +34,10 @@ func Execute() {
 
 	r := router.New(engine, driver.GetRDB)
 
+	// dependencies injection
+	// ----- gateway -----
+	mailAdapter := mail.New()
+
 	//mysql
 	employeeRepository := mysqlRepository.NewEmployee()
 	companyRepository := mysqlRepository.NewCompany()
@@ -42,7 +47,7 @@ func Execute() {
 	attendanceRepository := mysqlRepository.NewAttendance()
 
 	//usecase
-	employeeInputFactory := usecase.NewEmployeeInputFactory(employeeRepository)
+	employeeInputFactory := usecase.NewEmployeeInputFactory(employeeRepository, mailAdapter)
 	employeeOutputFactory := presenter.NewEmployeeOutputFactory()
 	companyInputFactory := usecase.NewCompanyInputFactory(companyRepository)
 	companyOutputFactory := presenter.NewCompanyOutputFactory()

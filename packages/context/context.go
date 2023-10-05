@@ -17,6 +17,7 @@ type Context interface {
 	ValidationError() error
 	DB() *gorm.DB
 	Transaction(fn func(ctx Context) error) error
+	Error() *errors.SubError
 }
 
 type ctx struct {
@@ -25,6 +26,7 @@ type ctx struct {
 	getDB func() *gorm.DB
 	db    *gorm.DB
 	uid   uint
+	err   *errors.SubError
 }
 
 func New(c *gin.Context, getDB func() *gorm.DB) Context {
@@ -33,6 +35,7 @@ func New(c *gin.Context, getDB func() *gorm.DB) Context {
 		requestID = uuid.New().String()
 	}
 
+	var err *errors.SubError
 	var uid uint
 	claimsInterface, ok := c.Get("claims")
 	if ok {
@@ -46,6 +49,7 @@ func New(c *gin.Context, getDB func() *gorm.DB) Context {
 		verr:  errors.NewValidation(),
 		getDB: getDB,
 		uid:   uid,
+		err:   err,
 	}
 }
 
@@ -59,4 +63,11 @@ func (c ctx) Authenticated() bool {
 
 func (c ctx) UID() uint {
 	return c.uid
+}
+
+func (c ctx) Error() *errors.SubError {
+	if c.err == nil {
+		c.err = errors.New()
+	}
+	return c.err
 }
