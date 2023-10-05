@@ -5,10 +5,21 @@ import (
 	"attendance-management/packages/context"
 	"attendance-management/usecase"
 	"fmt"
+	"gorm.io/gorm"
 	"time"
 )
 
 type attendance struct{}
+
+func (a attendance) GetByDate(ctx context.Context, date time.Time) ([]*domain.Attendance, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a attendance) CheckIn(ctx context.Context, attendance *domain.Attendance) error {
+	//TODO implement me
+	panic("implement me")
+}
 
 func NewAttendance() usecase.AttendanceRepository {
 	return &attendance{}
@@ -94,4 +105,19 @@ func (a attendance) CheckOut(ctx context.Context, number uint) error {
 	}
 
 	return nil
+}
+
+func (a attendance) GetByEmployeeNumberAndEmptyCheckout(ctx context.Context, number uint) (*domain.Attendance, error) {
+	db := ctx.DB()
+
+	var attendance domain.Attendance
+	err := db.Where("employee_number = ? AND checkout_time IS NULL", number).First(&attendance).Error
+
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &attendance, nil
 }

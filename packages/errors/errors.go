@@ -123,3 +123,27 @@ func (r ErrorResponse) Do(c *gin.Context, requestID string) {
 		Error:     r.err,
 	})
 }
+
+// 命名規則わからん取ってつけただけのエラー用コンストラクタ
+type SubError struct {
+	Message string
+	Fields  map[string]string
+}
+
+func (e *SubError) Error() string {
+	if e.Message != "" {
+		return e.Message
+	}
+	return fmt.Sprintf("Validation errors: %v", e.Fields)
+}
+
+func New() *SubError {
+	return &SubError{
+		Fields: make(map[string]string),
+	}
+}
+
+func (e *SubError) BadRequest(s string) error {
+	e.Message = s
+	return e
+}

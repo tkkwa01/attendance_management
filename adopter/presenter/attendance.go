@@ -10,6 +10,11 @@ type attendance struct {
 	c *gin.Context
 }
 
+func (a *attendance) CheckIn(id uint) error {
+	//TODO implement me
+	panic("implement me")
+}
+
 type AttendanceOutputFactory func(c *gin.Context) usecase.AttendanceOutputPort
 
 func NewAttendanceOutputFactory() AttendanceOutputFactory {

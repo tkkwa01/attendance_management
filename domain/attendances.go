@@ -15,8 +15,8 @@ type Attendance struct {
 	CheckInTime      time.Time `json:"check_in_time"`
 	CheckOutTime     time.Time `json:"check_out_time"`
 	AttendanceNumber uint      `json:"attendance_number" gorm:"unique"`
-	latitude         float64   `json:"latitude"`
-	longitude        float64   `json:"longitude"`
+	Latitude         float64   `json:"latitude"`
+	Longitude        float64   `json:"longitude"`
 }
 
 func NewAttendance(req *request.CreateAttendance) (*Attendance, error) {
@@ -26,10 +26,13 @@ func NewAttendance(req *request.CreateAttendance) (*Attendance, error) {
 		CheckInTime:      req.CheckInTime,
 		CheckOutTime:     req.CheckOutTime,
 		AttendanceNumber: req.AttendanceNumber,
-		latitude:         req.Latitude,
-		longitude:        req.Longitude,
+		Latitude:         req.Latitude,
+		Longitude:        req.Longitude,
 	}
-	err := validation.Validate(attendance)
+	//err := validation.Validate(attendance)エラーが出たから下に変更
+	validator := validation.Validate()
+	err := validator.Struct(attendance)
+
 	if err != nil {
 		return nil, err
 	}
