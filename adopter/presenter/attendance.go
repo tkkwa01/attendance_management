@@ -10,17 +10,22 @@ type attendance struct {
 	c *gin.Context
 }
 
-func (a *attendance) CheckIn(id uint) error {
-	//TODO implement me
-	panic("implement me")
-}
-
 type AttendanceOutputFactory func(c *gin.Context) usecase.AttendanceOutputPort
 
 func NewAttendanceOutputFactory() AttendanceOutputFactory {
 	return func(c *gin.Context) usecase.AttendanceOutputPort {
 		return &attendance{c: c}
 	}
+}
+
+func (a *attendance) CheckIn(id uint) error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a *attendance) CheckOut(res *domain.Attendance) error {
+	//TODO implement me
+	panic("implement me")
 }
 
 func (a *attendance) Create(id uint) error {
@@ -41,9 +46,4 @@ func (a *attendance) Update(res *domain.Attendance) error {
 func (a *attendance) Delete() error {
 	a.c.JSON(200, "")
 	return nil
-}
-
-func (a *attendance) CheckOut(res *domain.Attendance) error {
-	//TODO implement me
-	panic("implement me")
 }

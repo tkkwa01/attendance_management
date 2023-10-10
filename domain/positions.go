@@ -19,7 +19,7 @@ func NewPosition(ctx context.Context, req *request.CreatePosition) (*Positions, 
 		Type:           req.Type,
 		PositionNumber: req.PositionNumber,
 	}
-	err := validation.Validate(position)
+	err := validation.Validate().Struct(position)
 	if err != nil {
 		return nil, err
 	}

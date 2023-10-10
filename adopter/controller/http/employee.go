@@ -22,8 +22,10 @@ func NewEmployee(r *router.Router, inputFactory usecase.EmployeeInputFactory, ou
 		outputFactory: outputFactory,
 	}
 
-	r.Group("employee", nil, func(r *router.Router) {
+	r.Group("employees", nil, func(r *router.Router) {
 		r.Post("", handler.Create)
+		r.Put(":id", handler.Update)
+		r.Delete(":id", handler.Delete)
 		r.Post("login", handler.Login)
 		r.Post("refresh-token", handler.RefreshToken)
 		r.Patch("reset-password-request", handler.ResetPasswordRequest)
@@ -31,7 +33,7 @@ func NewEmployee(r *router.Router, inputFactory usecase.EmployeeInputFactory, ou
 	})
 
 	r.Group("", []gin.HandlerFunc{middleware.Auth(true, config.UserRealm, true)}, func(r *router.Router) {
-		r.Group("employee", nil, func(r *router.Router) {
+		r.Group("employees", nil, func(r *router.Router) {
 			r.Get("me", handler.GetMe)
 		})
 	})

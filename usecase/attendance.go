@@ -28,15 +28,15 @@ type AttendanceOutputPort interface {
 }
 
 type AttendanceRepository interface {
+	CheckIn(ctx context.Context, attendance *domain.Attendance) (uint, error)
+	CheckOut(ctx context.Context, number uint) error
 	Create(ctx context.Context, attendance *domain.Attendance) (uint, error)
 	GetByID(ctx context.Context, number uint) (*domain.Attendance, error)
 	Update(ctx context.Context, attendance *domain.Attendance) error
-	NumberExist(ctx context.Context, number uint) error
 	Delete(ctx context.Context, number uint) error
-	CheckIn(ctx context.Context, attendance *domain.Attendance) error
-	CheckOut(ctx context.Context, number uint) error
+	NumberExist(ctx context.Context, number uint) error
 	GetByEmployeeNumberAndEmptyCheckout(ctx context.Context, number uint) (*domain.Attendance, error)
-	GetByDate(ctx context.Context, date time.Time) ([]*domain.Attendance, error)
+	GetByDate(ctx context.Context, date time.Time) (*domain.Attendance, error)
 }
 
 type attendance struct {
@@ -62,14 +62,13 @@ func (a attendance) CheckIn(ctx context.Context, req *request.CreateAttendance, 
 		return err
 	}
 
-	// checkouttimeが空のレコードが存在する場合、エラーを返す
+	// CheckOutTimeが空のレコードが存在する場合、エラーを返す
 	if existingAttendance != nil {
 		return errors.New("既に出勤済みです。退勤を先に行ってください。")
 	}
 	// 新しい出勤データを作成
 	newAttendance := &domain.Attendance{
 		EmploymentID:     req.EmploymentID,
-		Date:             req.Date,
 		AttendanceNumber: req.AttendanceNumber,
 		Latitude:         req.Latitude,
 		Longitude:        req.Longitude,
@@ -77,12 +76,33 @@ func (a attendance) CheckIn(ctx context.Context, req *request.CreateAttendance, 
 	}
 
 	// データベースに新しい出勤データを保存
-	number, err = a.attendanceRepo.Create(ctx, newAttendance)
+	_, err = a.attendanceRepo.CheckIn(ctx, newAttendance)
 	if err != nil {
 		return err
 	}
 
-	return a.outputPort.Create(newAttendance.ID)
+	return a.outputPort.CheckIn(newAttendance.ID)
+}
+
+func (a attendance) CheckOut(ctx context.Context, number uint) error {
+	attendance, err := a.attendanceRepo.GetByID(ctx, number)
+	if err != nil {
+		return err
+	}
+
+	// 出勤データが存在しない場合の確認
+	if attendance == nil {
+		return errors.New("出勤データが存在しません。先に出勤してください。")
+	}
+
+	attendance.CheckOutTime = time.Now()
+
+	err = a.attendanceRepo.CheckOut(ctx, number)
+	if err != nil {
+		return err
+	}
+
+	return a.outputPort.CheckOut(attendance)
 }
 
 func (a attendance) GetByID(ctx context.Context, number uint) error {
@@ -138,25 +158,4 @@ func (a attendance) Delete(ctx context.Context, number uint) error {
 	}
 
 	return a.outputPort.Delete()
-}
-
-func (a attendance) CheckOut(ctx context.Context, number uint) error {
-	attendance, err := a.attendanceRepo.GetByID(ctx, number)
-	if err != nil {
-		return err
-	}
-
-	// 出勤データが存在しない場合の確認
-	if attendance == nil {
-		return errors.New("出勤データが存在しません。先に出勤してください。")
-	}
-
-	attendance.CheckOutTime = time.Now()
-
-	err = a.attendanceRepo.Update(ctx, attendance)
-	if err != nil {
-		return err
-	}
-
-	return a.outputPort.Update(attendance)
 }

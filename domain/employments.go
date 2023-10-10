@@ -35,7 +35,7 @@ func NewEmployment(ctx context.Context, req *request.CreateEmployment) (*Employm
 		SalaryTypeID:     req.SalaryTypeID,
 		EmploymentNumber: req.EmploymentNumber,
 	}
-	err := validation.Validate(employments)
+	err := validation.Validate().Struct(employments)
 	if err != nil {
 		return nil, err
 	}

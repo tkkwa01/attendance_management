@@ -1,10 +1,9 @@
 package config
 
 import (
-	"os"
-
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
+	"os"
 )
 
 var Env EnvType
