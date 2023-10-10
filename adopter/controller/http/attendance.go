@@ -19,17 +19,18 @@ func NewAttendance(r *router.Router, inputFactory usecase.AttendanceInputFactory
 		outputFactory: outputFactory,
 	}
 
-	r.Group("attendance", nil, func(r *router.Router) {
-		r.Post("in", handler.Create)
-		r.Put("out", handler.Update)
+	r.Group("attendances", nil, func(r *router.Router) {
+		r.Post("check-in", handler.CheckIn)
+		r.Post("check-out", handler.CheckOut)
 		r.Get("", handler.GetAttendance)
 		r.Put("", handler.Update)
 		r.Delete("", handler.Delete)
 	})
 }
 
-func (a attendance) Create(ctx context.Context, c *gin.Context) error {
+func (a attendance) CheckIn(ctx context.Context, c *gin.Context) error {
 	var req request.CreateAttendance
+	number := req.AttendanceNumber
 
 	if !bind(c, &req) {
 		return nil
@@ -38,7 +39,21 @@ func (a attendance) Create(ctx context.Context, c *gin.Context) error {
 	outputPort := a.outputFactory(c)
 	inputPort := a.inputFactory(outputPort)
 
-	return inputPort.Create(ctx, &req)
+	return inputPort.CheckIn(ctx, &req, number)
+}
+
+func (a attendance) CheckOut(ctx context.Context, c *gin.Context) error {
+	var req request.CreateAttendance
+	number := req.AttendanceNumber
+
+	if !bind(c, &req) {
+		return nil
+	}
+
+	outputPort := a.outputFactory(c)
+	inputPort := a.inputFactory(outputPort)
+
+	return inputPort.CheckOut(ctx, number)
 }
 
 func (a attendance) GetAttendance(ctx context.Context, c *gin.Context) error {

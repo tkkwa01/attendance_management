@@ -18,7 +18,7 @@ func NewSalaryType(ctx context.Context, req *request.CreateSalaryType) (*SalaryT
 	salaryType := &SalaryTypes{
 		Type: req.Type,
 	}
-	err := validation.Validate(salaryType)
+	err := validation.Validate().Struct(salaryType)
 	if err != nil {
 		return nil, err
 	}

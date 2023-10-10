@@ -19,7 +19,7 @@ func NewCompany(ctx context.Context, req *request.CreateCompany) (*Companies, er
 		Name:          req.Name,
 		CompanyNumber: req.CompanyNumber,
 	}
-	err := validation.Validate(company)
+	err := validation.Validate().Struct(company)
 	if err != nil {
 		return nil, err
 	}
