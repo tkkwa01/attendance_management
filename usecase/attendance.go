@@ -34,9 +34,9 @@ type AttendanceRepository interface {
 	GetByID(ctx context.Context, number uint) (*domain.Attendance, error)
 	Update(ctx context.Context, attendance *domain.Attendance) error
 	Delete(ctx context.Context, number uint) error
-	NumberExist(ctx context.Context, number uint) error
+	NumberExist(ctx context.Context, number uint) (bool, error)
 	GetByEmployeeNumberAndEmptyCheckout(ctx context.Context, number uint) (*domain.Attendance, error)
-	GetByDate(ctx context.Context, date time.Time) (*domain.Attendance, error)
+	GetByDate(ctx context.Context, date time.Time) ([]*domain.Attendance, error)
 }
 
 type attendance struct {

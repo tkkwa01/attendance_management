@@ -90,20 +90,23 @@ func (a attendance) Delete(ctx context.Context, number uint) error {
 		return dbError(res.Error)
 	}
 	if res.RowsAffected == 0 {
-		return dbError(res.Error)
+		return dbError(fmt.Errorf("no attendance record found to delete"))
 	}
 	return nil
 }
 
-func (a attendance) NumberExist(ctx context.Context, number uint) error {
+func (a attendance) NumberExist(ctx context.Context, number uint) (bool, error) {
 	db := ctx.DB()
 
 	var attendance domain.Attendance
 	err := db.Where("number = ?", number).First(&attendance).Error
-	if err != nil {
-		return dbError(err)
+	if err == gorm.ErrRecordNotFound {
+		return false, nil
 	}
-	return nil
+	if err != nil {
+		return false, dbError(err)
+	}
+	return true, nil
 }
 
 func (a attendance) GetByEmployeeNumberAndEmptyCheckout(ctx context.Context, number uint) (*domain.Attendance, error) {
@@ -121,18 +124,17 @@ func (a attendance) GetByEmployeeNumberAndEmptyCheckout(ctx context.Context, num
 	return &attendance, nil
 }
 
-func (a attendance) GetByDate(ctx context.Context, date time.Time) (*domain.Attendance, error) {
+func (a attendance) GetByDate(ctx context.Context, date time.Time) ([]*domain.Attendance, error) {
 	db := ctx.DB()
-	var attendance domain.Attendance
+	var attendances []*domain.Attendance
 
 	// 日付の範囲を指定して検索条件を作成
 	startOfDay := date.Truncate(24 * time.Hour)
 	endOfDay := startOfDay.Add(24*time.Hour - time.Nanosecond)
 
-	var attendances *domain.Attendance
 	err := db.Where("check_in_time >= ? AND check_in_time < ?", startOfDay, endOfDay).Find(&attendances).Error
 	if err != nil {
 		return nil, dbError(err)
 	}
-	return &attendance, nil
+	return attendances, nil
 }
