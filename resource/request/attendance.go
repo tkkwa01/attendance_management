@@ -9,6 +9,7 @@ type CreateAttendance struct {
 	AttendanceNumber uint      `json:"attendance_number"`
 	Latitude         float64   `json:"latitude"`
 	Longitude        float64   `json:"longitude"`
+	Date             time.Time `json:"date"`
 }
 
 type UpdateAttendance struct {
