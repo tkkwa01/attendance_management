@@ -19,13 +19,13 @@ func NewAttendanceOutputFactory() AttendanceOutputFactory {
 }
 
 func (a *attendance) CheckIn(id uint) error {
-	//TODO implement me
-	panic("implement me")
+	a.c.JSON(201, gin.H{"id": id})
+	return nil
 }
 
 func (a *attendance) CheckOut(res *domain.Attendance) error {
-	//TODO implement me
-	panic("implement me")
+	a.c.JSON(200, res)
+	return nil
 }
 
 func (a *attendance) Create(id uint) error {

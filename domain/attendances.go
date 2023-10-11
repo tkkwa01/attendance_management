@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"attendance-management/packages/validation"
 	"attendance-management/resource/request"
 	"time"
 )
@@ -28,11 +27,11 @@ func NewAttendance(req *request.CreateAttendance) (*Attendance, error) {
 		Longitude:        req.Longitude,
 	}
 	//err := validation.Validate(attendance)エラーが出たから下に変更
-	validator := validation.Validate()
-	err := validator.Struct(attendance)
-
-	if err != nil {
-		return nil, err
-	}
+	//	validator := validation.Validate()
+	//	err := validator.Struct(attendance)
+	//
+	//	if err != nil {
+	//		return nil, err
+	//	}
 	return attendance, nil
 }
