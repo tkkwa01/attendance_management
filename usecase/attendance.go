@@ -67,21 +67,17 @@ func (a attendance) CheckIn(ctx context.Context, req *request.CreateAttendance, 
 		return errors.New("既に出勤済みです。退勤を先に行ってください。")
 	}
 	// 新しい出勤データを作成
-	newAttendance := &domain.Attendance{
-		EmploymentID:     req.EmploymentID,
-		AttendanceNumber: req.AttendanceNumber,
-		Latitude:         req.Latitude,
-		Longitude:        req.Longitude,
-		CheckInTime:      time.Now(),
+	newAttendance, err := domain.NewAttendance(req)
+	if err != nil {
+		return err
 	}
-
 	// データベースに新しい出勤データを保存
-	_, err = a.attendanceRepo.CheckIn(ctx, newAttendance)
+	id, err := a.attendanceRepo.CheckIn(ctx, newAttendance)
 	if err != nil {
 		return err
 	}
 
-	return a.outputPort.CheckIn(newAttendance.ID)
+	return a.outputPort.CheckIn(id)
 }
 
 func (a attendance) CheckOut(ctx context.Context, number uint) error {
@@ -95,7 +91,8 @@ func (a attendance) CheckOut(ctx context.Context, number uint) error {
 		return errors.New("出勤データが存在しません。先に出勤してください。")
 	}
 
-	attendance.CheckOutTime = time.Now()
+	now := time.Now()
+	attendance.CheckOutTime = &now
 
 	err = a.attendanceRepo.CheckOut(ctx, number)
 	if err != nil {

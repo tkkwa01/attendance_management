@@ -38,7 +38,8 @@ func (a attendance) CheckOut(ctx context.Context, number uint) error {
 	}
 
 	// チェックアウト時間を追加
-	targetAttendance.CheckOutTime = time.Now()
+	now := time.Now()
+	targetAttendance.CheckOutTime = &now
 
 	// 更新を保存
 	res = db.Save(&targetAttendance)
@@ -113,7 +114,7 @@ func (a attendance) GetByEmployeeNumberAndEmptyCheckout(ctx context.Context, num
 	db := ctx.DB()
 
 	var attendance domain.Attendance
-	err := db.Where("employee_number = ? AND checkout_time IS NULL", number).First(&attendance).Error
+	err := db.Where("employee_number = ? AND check_out_time IS NULL", number).First(&attendance).Error
 
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil

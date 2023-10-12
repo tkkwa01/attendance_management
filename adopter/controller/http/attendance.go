@@ -5,7 +5,9 @@ import (
 	"attendance-management/packages/http/router"
 	"attendance-management/resource/request"
 	"attendance-management/usecase"
+	"errors"
 	"github.com/gin-gonic/gin"
+	"strconv"
 )
 
 type attendance struct {
@@ -20,21 +22,55 @@ func NewAttendance(r *router.Router, inputFactory usecase.AttendanceInputFactory
 	}
 
 	r.Group("attendances", nil, func(r *router.Router) {
-		r.Post("check-in", handler.CheckIn)
-		r.Post("check-out", handler.CheckOut)
+		r.Post("check-in/:employee_number", handler.CheckIn)
+		r.Post("check-out/employee_number", handler.CheckOut)
 		r.Get("", handler.GetAttendance)
-		r.Put("", handler.Update)
-		r.Delete("", handler.Delete)
+		r.Put(":employee_number", handler.Update)
+		r.Delete(":employee_number", handler.Delete)
 	})
 }
 
+//func (a attendance) CheckIn(ctx context.Context, c *gin.Context) error {
+//	var req request.CreateAttendance
+//	number := req.AttendanceNumber
+//	// IDを文字列として取得
+//	employeeNumberStr := c.Param("employee_number")
+//	if employeeNumberStr == "" {
+//		return errors.New("employee_number parameter is missing")
+//	}
+//
+//	if !bind(c, &req) {
+//		return nil
+//	}
+//
+//	outputPort := a.outputFactory(c)
+//	inputPort := a.inputFactory(outputPort)
+//
+//	return inputPort.CheckIn(ctx, &req, number)
+//}
+
 func (a attendance) CheckIn(ctx context.Context, c *gin.Context) error {
 	var req request.CreateAttendance
-	number := req.AttendanceNumber
 
-	if !bind(c, &req) {
-		return nil
+	// IDを文字列として取得
+	employeeNumberStr := c.Param("employee_number")
+	if employeeNumberStr == "" {
+		return errors.New("employee_number parameter is missing")
 	}
+
+	// 文字列をuintに変換
+	employeeNumber, err := strconv.ParseUint(employeeNumberStr, 10, 64)
+	if err != nil {
+		return errors.New("invalid employee_number parameter")
+	}
+	req.EmployeeNumber = uint(employeeNumber)
+
+	// リクエストボディをバインド
+	if err := c.Bind(&req); err != nil {
+		return err
+	}
+
+	number := req.AttendanceNumber
 
 	outputPort := a.outputFactory(c)
 	inputPort := a.inputFactory(outputPort)
