@@ -21,6 +21,7 @@ type EmployeeInputPort interface {
 	ResetPassword(ctx context.Context, req *request.EmployeeResetPassword) error
 	Login(ctx context.Context, req *request.EmployeeLogin) error
 	RefreshToken(req *request.EmployeeRefreshToken) error
+	GetAll(ctx context.Context) error
 }
 
 type EmployeeOutputPort interface {
@@ -32,6 +33,7 @@ type EmployeeOutputPort interface {
 	ResetPassword() error
 	Login(isSession bool, res *response.UserLogin) error
 	RefreshToken(isSession bool, res *response.UserLogin) error
+	GetAll(res []*domain.Employees) error
 }
 
 type EmployeeRepository interface {
@@ -43,6 +45,7 @@ type EmployeeRepository interface {
 	GetByEmail(ctx context.Context, email string) (*domain.Employees, error)
 	EmailExists(ctx context.Context, email string) (bool, error)
 	GetByRecoveryToken(ctx context.Context, recoveryToken string) (*domain.Employees, error)
+	GetAll(ctx context.Context) ([]*domain.Employees, error)
 }
 
 type employee struct {
@@ -228,4 +231,12 @@ func (e employee) RefreshToken(req *request.EmployeeRefreshToken) error {
 		return nil
 	}
 	return e.outputPort.RefreshToken(req.Session, &res)
+}
+
+func (e employee) GetAll(ctx context.Context) error {
+	employees, err := e.EmployeeRepo.GetAll(ctx)
+	if err != nil {
+		return err
+	}
+	return e.outputPort.GetAll(employees)
 }

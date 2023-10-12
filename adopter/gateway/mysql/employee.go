@@ -94,3 +94,18 @@ func (e employee) GetByRecoveryToken(ctx context.Context, recoveryToken string) 
 	}
 	return &dest, nil
 }
+
+func (e employee) GetAll(ctx context.Context) ([]*domain.Employees, error) {
+	db := ctx.DB()
+
+	// 従業員を保存するスライスを定義
+	var employees []*domain.Employees
+
+	// 全ての従業員をデータベースから取得
+	err := db.Find(&employees).Error
+	if err != nil {
+		return nil, dbError(err)
+	}
+
+	return employees, nil
+}

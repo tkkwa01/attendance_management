@@ -93,3 +93,8 @@ func (e *employee) RefreshToken(isSession bool, res *response.UserLogin) error {
 
 	return nil
 }
+
+func (e *employee) GetAll(res []*domain.Employees) error {
+	e.c.JSON(http.StatusOK, res)
+	return nil
+}

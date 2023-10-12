@@ -30,25 +30,6 @@ func NewAttendance(r *router.Router, inputFactory usecase.AttendanceInputFactory
 	})
 }
 
-//func (a attendance) CheckIn(ctx context.Context, c *gin.Context) error {
-//	var req request.CreateAttendance
-//	number := req.AttendanceNumber
-//	// IDを文字列として取得
-//	employeeNumberStr := c.Param("employee_number")
-//	if employeeNumberStr == "" {
-//		return errors.New("employee_number parameter is missing")
-//	}
-//
-//	if !bind(c, &req) {
-//		return nil
-//	}
-//
-//	outputPort := a.outputFactory(c)
-//	inputPort := a.inputFactory(outputPort)
-//
-//	return inputPort.CheckIn(ctx, &req, number)
-//}
-
 func (a attendance) CheckIn(ctx context.Context, c *gin.Context) error {
 	var req request.CreateAttendance
 
@@ -93,7 +74,7 @@ func (a attendance) CheckOut(ctx context.Context, c *gin.Context) error {
 }
 
 func (a attendance) GetAttendance(ctx context.Context, c *gin.Context) error {
-	numberStr := c.Query("number")
+	numberStr := c.Query("attendance_number")
 	number, err := stringToUint(numberStr)
 	if err != nil {
 		return err

@@ -34,6 +34,7 @@ func NewEmployee(r *router.Router, inputFactory usecase.EmployeeInputFactory, ou
 		r.Post("refresh-token", handler.RefreshToken)
 		r.Patch("reset-password-request", handler.ResetPasswordRequest)
 		r.Patch("reset-password", handler.ResetPassword)
+		r.Get("", handler.GetAll)
 	})
 
 	r.Group("", []gin.HandlerFunc{middleware.Auth(true, config.UserRealm, true)}, func(r *router.Router) {
@@ -163,4 +164,11 @@ func (e employee) RefreshToken(_ context.Context, c *gin.Context) error {
 	inputPort := e.inputFactory(outputPort)
 
 	return inputPort.RefreshToken(&req)
+}
+
+func (e employee) GetAll(ctx context.Context, c *gin.Context) error {
+	outputPort := e.outputFactory(c)
+	inputPort := e.inputFactory(outputPort)
+
+	return inputPort.GetAll(ctx)
 }
