@@ -10,12 +10,14 @@ import (
 	"attendance-management/usecase"
 	"errors"
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"strconv"
 )
 
 type employee struct {
 	inputFactory  usecase.EmployeeInputFactory
 	outputFactory func(c *gin.Context) usecase.EmployeeOutputPort
+	EmployeeRepo  usecase.EmployeeRepository
 }
 
 func NewEmployee(r *router.Router, inputFactory usecase.EmployeeInputFactory, outputFactory presenter.EmployeeOutputFactory) {
@@ -27,7 +29,7 @@ func NewEmployee(r *router.Router, inputFactory usecase.EmployeeInputFactory, ou
 	r.Group("employees", nil, func(r *router.Router) {
 		r.Post("", handler.Create)
 		r.Put(":employee_number", handler.Update)
-		r.Delete(":id", handler.Delete)
+		r.Delete(":employee_number", handler.Delete)
 		r.Post("login", handler.Login)
 		r.Post("refresh-token", handler.RefreshToken)
 		r.Patch("reset-password-request", handler.ResetPasswordRequest)
@@ -89,15 +91,26 @@ func (e employee) Update(ctx context.Context, c *gin.Context) error {
 }
 
 func (e employee) Delete(ctx context.Context, c *gin.Context) error {
-	numberStr := c.Query("number")
-	number, err := stringToUint(numberStr)
+	// employee_numberをパスパラメータから取得
+	employeeNumberStr := c.Param("employee_number")
+	if employeeNumberStr == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "employee_number parameter is missing"})
+		return errors.New("employee_number parameter is missing")
+	}
+
+	// 文字列をuintに変換
+	employeeNumber, err := strconv.ParseUint(employeeNumberStr, 10, 64)
 	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid employee_number parameter"})
 		return err
 	}
+
+	// outputとinputポートを初期化
 	outputPort := e.outputFactory(c)
 	inputPort := e.inputFactory(outputPort)
 
-	return inputPort.Delete(ctx, number)
+	// inputPortのDeleteメソッドを使用して従業員を削除
+	return inputPort.Delete(ctx, uint(employeeNumber))
 }
 
 func (e employee) ResetPasswordRequest(ctx context.Context, c *gin.Context) error {
