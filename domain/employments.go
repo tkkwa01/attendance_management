@@ -10,7 +10,6 @@ import (
 
 type Employments struct {
 	gorm.Model
-	ID               uint      `json:"id"`
 	EmployeeID       uint      `json:"employee_id"`
 	CompanyID        uint      `json:"company_id"`
 	PositionID       uint      `json:"position_id"`
@@ -26,7 +25,6 @@ type Employments struct {
 
 func NewEmployment(ctx context.Context, req *request.CreateEmployment) (*Employments, error) {
 	employments := &Employments{
-		ID:               req.ID,
 		EmployeeID:       req.EmployeeID,
 		CompanyID:        req.CompanyID,
 		PositionID:       req.PositionID,

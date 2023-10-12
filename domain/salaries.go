@@ -7,7 +7,6 @@ import (
 
 type Salaries struct {
 	gorm.Model
-	ID                 uint      `json:"id"`
 	EmploymentID       uint      `json:"employment_id"`
 	MonthYear          time.Time `json:"month_year"`
 	MonthlyTotalSalary int       `json:"monthly_total_salary"`

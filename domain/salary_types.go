@@ -9,7 +9,6 @@ import (
 
 type SalaryTypes struct {
 	gorm.Model
-	ID               uint   `json:"id"`
 	Type             string `json:"type"`
 	SalaryTypeNumber uint   `json:"salary_type_number" gorm:"unique"`
 }

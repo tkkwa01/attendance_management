@@ -32,11 +32,11 @@ func (e employee) NumberExist(ctx context.Context, number string) (bool, error) 
 	return count > 0, nil
 }
 
-func (e employee) GetByID(ctx context.Context, id uint) (*domain.Employees, error) {
+func (e employee) GetByID(ctx context.Context, employeeNumber uint) (*domain.Employees, error) {
 	db := ctx.DB()
 
 	var user domain.Employees
-	err := db.First(&user, id).Error
+	err := db.Where(&domain.Employees{EmployeeNumber: employeeNumber}).First(&user).Error
 	if err != nil {
 		return nil, dbError(err)
 	}

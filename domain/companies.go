@@ -9,7 +9,6 @@ import (
 
 type Companies struct {
 	gorm.Model
-	ID            uint   `json:"id"`
 	Name          string `json:"name"`
 	CompanyNumber uint   `json:"company_number" gorm:"unique"`
 }

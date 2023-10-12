@@ -128,7 +128,7 @@ func (a attendance) Update(ctx context.Context, req *request.UpdateAttendance) e
 			return err
 		}
 
-		newAttendance, err := domain.NewAttendance((*request.CreateAttendance)(req))
+		newAttendance, err := domain.UpdateAttendance(req)
 		if err != nil {
 			return err
 		}

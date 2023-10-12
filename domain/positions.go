@@ -9,7 +9,6 @@ import (
 
 type Positions struct {
 	gorm.Model
-	ID             uint   `json:"id"`
 	Type           string `json:"type"`
 	PositionNumber uint   `json:"position_number" gorm:"unique"`
 }

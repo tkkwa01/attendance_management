@@ -9,7 +9,7 @@ import (
 var Env EnvType
 
 type EnvType struct {
-	Port string `default:"8000"`
+	Port string `default:"8080"`
 	App  struct {
 		Secret string `required:"true"`
 		URL    string `required:"true"`
@@ -32,11 +32,6 @@ type EnvType struct {
 		From string `required:"true"`
 		Name string `required:"true"`
 	}
-	Gcp struct {
-		CredentialPath string `required:"true" split_words:"true"`
-		Bucket         string `required:"true"`
-	}
-	Origins string `split_words:"true"`
 }
 
 func fileExists(path string) bool {

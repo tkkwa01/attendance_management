@@ -8,9 +8,7 @@ import "gorm.io/gorm"
 
 type Attendance struct {
 	gorm.Model
-	ID               uint      `json:"id"`
 	EmploymentID     uint      `json:"employment_id"`
-	Date             time.Time `json:"date"`
 	CheckInTime      time.Time `json:"check_in_time"`
 	CheckOutTime     time.Time `json:"check_out_time"`
 	AttendanceNumber uint      `json:"attendance_number" gorm:"unique"`
@@ -18,24 +16,26 @@ type Attendance struct {
 	Longitude        float64   `json:"longitude"`
 }
 
-func NewAttendance(req *request.CreateAttendance) (*Attendance, error) {
+func NewAttendance(dto *request.CreateAttendance) (*Attendance, error) {
 	attendance := &Attendance{
-		EmploymentID:     req.EmploymentID,
-		Date:             req.Date,
-		CheckInTime:      req.CheckInTime,
-		CheckOutTime:     req.CheckOutTime,
-		AttendanceNumber: req.AttendanceNumber,
-		Latitude:         req.Latitude,
-		Longitude:        req.Longitude,
+		EmploymentID:     dto.EmploymentID,
+		CheckInTime:      dto.CheckInTime,
+		CheckOutTime:     dto.CheckOutTime,
+		AttendanceNumber: dto.AttendanceNumber,
+		Latitude:         dto.Latitude,
+		Longitude:        dto.Longitude,
 	}
-	//err := validation.Validate(attendance)エラーが出たから下に変更
+	return attendance, nil
+}
 
-	//validator := validation.Validate()
-	//err := validator.Struct(attendance)
-	//
-	//if err != nil {
-	//	return nil, err
-	//}
-
+func UpdateAttendance(dto *request.UpdateAttendance) (*Attendance, error) {
+	attendance := &Attendance{
+		EmploymentID:     dto.EmploymentID,
+		CheckInTime:      dto.CheckInTime,
+		CheckOutTime:     dto.CheckOutTime,
+		AttendanceNumber: dto.AttendanceNumber,
+		Latitude:         dto.Latitude,
+		Longitude:        dto.Longitude,
+	}
 	return attendance, nil
 }

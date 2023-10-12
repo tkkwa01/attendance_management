@@ -9,7 +9,6 @@ import (
 
 type Employees struct {
 	gorm.Model
-	ID             uint                `json:"id"`
 	Name           string              `json:"name"`
 	PhoneNumber    string              `json:"phone_number"`
 	Email          string              `json:"email" gorm:"index;unique"`
@@ -22,6 +21,7 @@ func NewEmployee(ctx context.Context, dto *request.EmployeeCreate) (*Employees, 
 	var user = Employees{
 		Name:           dto.Name,
 		PhoneNumber:    dto.PhoneNumber,
+		Email:          dto.Email,
 		EmployeeNumber: dto.EmployeeNumber,
 		RecoveryToken:  vobj.NewRecoveryToken(""),
 	}
