@@ -139,3 +139,16 @@ func (a attendance) GetByDate(ctx context.Context, date time.Time) ([]*domain.At
 	}
 	return attendances, nil
 }
+
+func (a attendance) GetAll(ctx context.Context) ([]*domain.Attendance, error) {
+	db := ctx.DB()
+
+	var attendances []*domain.Attendance
+
+	err := db.Find(&attendances).Error
+	if err != nil {
+		return nil, dbError(err)
+	}
+
+	return attendances, nil
+}

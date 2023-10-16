@@ -15,6 +15,7 @@ type (
 		GetByID(ctx context.Context, number uint) error
 		Update(ctx context.Context, req *request.UpdateAttendance) error
 		Delete(ctx context.Context, number uint) error
+		GetAll(ctx context.Context) error
 	}
 )
 
@@ -25,6 +26,7 @@ type AttendanceOutputPort interface {
 	Update(res *domain.Attendance) error
 	Delete() error
 	Create(id uint) error
+	GetAll(res []*domain.Attendance) error
 }
 
 type AttendanceRepository interface {
@@ -37,6 +39,7 @@ type AttendanceRepository interface {
 	NumberExist(ctx context.Context, number uint) (bool, error)
 	GetByEmployeeNumberAndEmptyCheckout(ctx context.Context, number uint) (*domain.Attendance, error)
 	GetByDate(ctx context.Context, date time.Time) ([]*domain.Attendance, error)
+	GetAll(ctx context.Context) ([]*domain.Attendance, error)
 }
 
 type attendance struct {
@@ -155,4 +158,12 @@ func (a attendance) Delete(ctx context.Context, number uint) error {
 	}
 
 	return a.outputPort.Delete()
+}
+
+func (a attendance) GetAll(ctx context.Context) error {
+	attendances, err := a.attendanceRepo.GetAll(ctx)
+	if err != nil {
+		return err
+	}
+	return a.outputPort.GetAll(attendances)
 }

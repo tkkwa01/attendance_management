@@ -4,6 +4,7 @@ import (
 	"attendance-management/domain"
 	"attendance-management/usecase"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 type attendance struct {
@@ -45,5 +46,10 @@ func (a *attendance) Update(res *domain.Attendance) error {
 
 func (a *attendance) Delete() error {
 	a.c.JSON(200, "")
+	return nil
+}
+
+func (a *attendance) GetAll(res []*domain.Attendance) error {
+	a.c.JSON(http.StatusOK, res)
 	return nil
 }

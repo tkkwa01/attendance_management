@@ -25,6 +25,7 @@ func NewAttendance(r *router.Router, inputFactory usecase.AttendanceInputFactory
 		r.Post("check-in/:employee_number", handler.CheckIn)
 		r.Put("check-out/:attendance_number", handler.CheckOut)
 		r.Get("", handler.GetAttendance)
+		r.Get("all", handler.GetAll)
 		r.Put(":employee_number", handler.Update)
 		r.Delete(":employee_number", handler.Delete)
 	})
@@ -123,4 +124,11 @@ func (a attendance) Delete(ctx context.Context, c *gin.Context) error {
 	inputPort := a.inputFactory(outputPort)
 
 	return inputPort.Delete(ctx, number)
+}
+
+func (a attendance) GetAll(ctx context.Context, c *gin.Context) error {
+	outputPort := a.outputFactory(c)
+	inputPort := a.inputFactory(outputPort)
+
+	return inputPort.GetAll(ctx)
 }
