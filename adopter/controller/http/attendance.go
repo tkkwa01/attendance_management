@@ -7,6 +7,7 @@ import (
 	"attendance-management/usecase"
 	"errors"
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"strconv"
 )
 
@@ -26,8 +27,8 @@ func NewAttendance(r *router.Router, inputFactory usecase.AttendanceInputFactory
 		r.Put("check-out/:attendance_number", handler.CheckOut)
 		r.Get("", handler.GetAttendance)
 		r.Get("all", handler.GetAll)
-		r.Put(":employee_number", handler.Update)
-		r.Delete(":employee_number", handler.Delete)
+		r.Put(":attendance_number", handler.Update)
+		r.Delete(":attendance_number", handler.Delete)
 	})
 }
 
@@ -103,8 +104,20 @@ func (a attendance) GetAttendance(ctx context.Context, c *gin.Context) error {
 func (a attendance) Update(ctx context.Context, c *gin.Context) error {
 	var req request.UpdateAttendance
 
-	if !bind(c, &req) {
-		return nil
+	// IDを文字列として取得
+	employeeNumberStr := c.Param("attendance_number")
+	if employeeNumberStr == "" {
+		return errors.New("attendance_number parameter is missing")
+	}
+	// 文字列をuintに変換
+	attendanceNumber, err := strconv.ParseUint(employeeNumberStr, 10, 64)
+	if err != nil {
+		return errors.New("invalid attendance_number parameter")
+	}
+	req.AttendanceNumber = uint(attendanceNumber)
+	// リクエストボディをバインド
+	if err := c.Bind(&req); err != nil {
+		return err
 	}
 
 	outputPort := a.outputFactory(c)
@@ -114,16 +127,26 @@ func (a attendance) Update(ctx context.Context, c *gin.Context) error {
 }
 
 func (a attendance) Delete(ctx context.Context, c *gin.Context) error {
-	numberStr := c.Query("number")
-	number, err := stringToUint(numberStr)
+	// attendance_numberをパスパラメータから取得
+	attendanceNumberStr := c.Param("attendance_number")
+	if attendanceNumberStr == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "attendance_number parameter is missing"})
+		return errors.New("attendance_number parameter is missing")
+	}
+
+	// 文字列をuintに変換
+	attendanceNumber, err := strconv.ParseUint(attendanceNumberStr, 10, 64)
 	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid attendance_number parameter"})
 		return err
 	}
 
+	// outputとinputポートを初期化
 	outputPort := a.outputFactory(c)
 	inputPort := a.inputFactory(outputPort)
 
-	return inputPort.Delete(ctx, number)
+	// inputPortのDeleteメソッドを使用して従業員を削除
+	return inputPort.Delete(ctx, uint(attendanceNumber))
 }
 
 func (a attendance) GetAll(ctx context.Context, c *gin.Context) error {
