@@ -23,7 +23,7 @@ func NewAttendance(r *router.Router, inputFactory usecase.AttendanceInputFactory
 
 	r.Group("attendances", nil, func(r *router.Router) {
 		r.Post("check-in/:employee_number", handler.CheckIn)
-		r.Post("check-out/employee_number", handler.CheckOut)
+		r.Put("check-out/:attendance_number", handler.CheckOut)
 		r.Get("", handler.GetAttendance)
 		r.Put(":employee_number", handler.Update)
 		r.Delete(":employee_number", handler.Delete)
@@ -60,12 +60,25 @@ func (a attendance) CheckIn(ctx context.Context, c *gin.Context) error {
 }
 
 func (a attendance) CheckOut(ctx context.Context, c *gin.Context) error {
-	var req request.CreateAttendance
-	number := req.AttendanceNumber
+	var req request.CheckOutAttendance
 
-	if !bind(c, &req) {
-		return nil
+	// IDを文字列として取得
+	employeeNumberStr := c.Param("attendance_number")
+	if employeeNumberStr == "" {
+		return errors.New("attendance_number parameter is missing")
 	}
+	// 文字列をuintに変換
+	attendanceNumber, err := strconv.ParseUint(employeeNumberStr, 10, 64)
+	if err != nil {
+		return errors.New("invalid attendance_number parameter")
+	}
+	req.AttendanceNumber = uint(attendanceNumber)
+	// リクエストボディをバインド
+	if err := c.Bind(&req); err != nil {
+		return err
+	}
+
+	number := req.AttendanceNumber
 
 	outputPort := a.outputFactory(c)
 	inputPort := a.inputFactory(outputPort)

@@ -20,3 +20,10 @@ type UpdateAttendance struct {
 	Latitude         float64    `json:"latitude"`
 	Longitude        float64    `json:"longitude"`
 }
+
+type CheckOutAttendance struct {
+	AttendanceNumber uint      `json:"attendance_number"`
+	CheckOutTime     time.Time `json:"check_out_time"`
+	Latitude         float64   `json:"latitude"`
+	Longitude        float64   `json:"longitude"`
+}
