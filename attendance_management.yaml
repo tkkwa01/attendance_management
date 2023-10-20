@@ -12,7 +12,7 @@ tags:
   - name: salary_types
   - name: attendance
 paths:
-  /employee:
+  /employees:
     post:
       tags:
         - employees
@@ -23,9 +23,12 @@ paths:
             schema:
               type: object
               example:
-                name: mani
-                phone_number: 080-0420-0719
-                employee_number: 3
+                name: aaa
+                phone_number: '111'
+                email: aaa@example.com
+                employee_number: 1
+                password: securePassword123
+                password_confirm: securePassword123
       responses:
         '200':
           description: Successful response
@@ -34,46 +37,36 @@ paths:
     get:
       tags:
         - employees
-      summary: get_employee_info
-      parameters:
-        - name: number
-          in: query
-          schema:
-            type: integer
-          example: '3'
+      summary: get_all_employees
       responses:
         '200':
           description: Successful response
           content:
             application/json: {}
+  /employees/1003:
     put:
       tags:
         - employees
-      summary: update_employee
+      summary: update_employees
       requestBody:
         content:
           application/json:
             schema:
               type: object
               example:
-                name: mani-chan
-                phone_number: 080-0420-0719
-                employee_number: 3
+                name: 山田 皇帝
+                phone_number: 090-8888-0000
+                email: yamada.koutei@example.com
       responses:
         '200':
           description: Successful response
           content:
             application/json: {}
+  /employees/1:
     delete:
       tags:
         - employees
       summary: delete_employee
-      parameters:
-        - name: number
-          in: query
-          schema:
-            type: integer
-          example: '3'
       responses:
         '200':
           description: Successful response
@@ -355,33 +348,53 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /attendance:
+  /attendances/check-in/1:
     post:
       tags:
         - attendance
-      summary: create_attendance
+      summary: check-in
       requestBody:
         content:
           application/json:
             schema:
               type: object
               example:
-                employment_id: 123
-                date: '2023-08-09T00:00:00Z'
-                check_in_time: '2023-08-09T09:00:00Z'
-                check_out_time: '2023-08-09T18:00:00Z'
+                employment_id: 3
+                check_in_time: '2023-10-12T08:00:00Z'
                 attendance_number: 1
+                latitude: 35.6895
+                longitude: 139.6917
       responses:
         '200':
           description: Successful response
           content:
             application/json: {}
+  /attendances/check-out/1:
+    put:
+      tags:
+        - attendance
+      summary: check-out
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                check_out_time: '2023-10-16T17:34:56Z'
+                latitude: 35.6895
+                longitude: 139.6917
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /attendances:
     get:
       tags:
         - attendance
       summary: get_attendance
       parameters:
-        - name: number
+        - name: attendance_number
           in: query
           schema:
             type: integer
@@ -391,21 +404,34 @@ paths:
           description: Successful response
           content:
             application/json: {}
+  /attendances/all:
+    get:
+      tags:
+        - attendance
+      summary: get_all
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /attendances/1:
     put:
       tags:
         - attendance
-      summary: New Request
+      summary: update_attendance
       requestBody:
         content:
           application/json:
             schema:
               type: object
               example:
-                employment_id: 123
-                date: '2023-08-09T00:00:00Z'
-                check_in_time: '2023-08-09T09:30:00Z'
-                check_out_time: '2023-08-09T18:30:00Z'
+                employee_number: 1
+                employment_id: 3
+                check_in_time: '2023-10-12T08:00:00Z'
+                check_out_time: '2023-10-16T06:46:41.664Z'
                 attendance_number: 1
+                latitude: 35.6895
+                longitude: 139.6917
       responses:
         '200':
           description: Successful response
@@ -415,12 +441,6 @@ paths:
       tags:
         - attendance
       summary: New Request
-      parameters:
-        - name: number
-          in: query
-          schema:
-            type: integer
-          example: '1'
       responses:
         '200':
           description: Successful response
