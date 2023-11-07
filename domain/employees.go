@@ -26,7 +26,9 @@ func NewEmployee(ctx context.Context, dto *request.EmployeeCreate) (*Employees, 
 		RecoveryToken:  vobj.NewRecoveryToken(""),
 	}
 
-	ctx.Validate(user)
+	if ctx.IsInValid() {
+		return nil, ctx.ValidationError()
+	}
 
 	password, err := vobj.NewPassword(ctx, dto.Password, dto.PasswordConfirm)
 	if err != nil {

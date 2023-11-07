@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"attendance-management/packages/context"
 	"attendance-management/resource/request"
 	"time"
 )
@@ -16,8 +17,8 @@ type Attendance struct {
 	Longitude        float64    `json:"longitude"`
 }
 
-func NewAttendance(dto *request.CreateAttendance) (*Attendance, error) {
-	attendance := &Attendance{
+func NewAttendance(ctx context.Context, dto *request.CreateAttendance) (*Attendance, error) {
+	attendance := Attendance{
 		EmployeeNumber:   dto.EmployeeNumber,
 		EmploymentID:     dto.EmploymentID,
 		CheckInTime:      dto.CheckInTime,
@@ -26,7 +27,12 @@ func NewAttendance(dto *request.CreateAttendance) (*Attendance, error) {
 		Latitude:         dto.Latitude,
 		Longitude:        dto.Longitude,
 	}
-	return attendance, nil
+
+	if ctx.IsInValid() {
+		return nil, ctx.ValidationError()
+	}
+
+	return &attendance, nil
 }
 
 func UpdateAttendance(dto *request.UpdateAttendance) (*Attendance, error) {

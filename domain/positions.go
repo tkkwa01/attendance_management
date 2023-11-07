@@ -2,7 +2,6 @@ package domain
 
 import (
 	"attendance-management/packages/context"
-	"attendance-management/packages/validation"
 	"attendance-management/resource/request"
 )
 
@@ -13,14 +12,15 @@ type Positions struct {
 	Employments    []Employments `gorm:"foreignKey:PositionID"`
 }
 
-func NewPosition(ctx context.Context, req *request.CreatePosition) (*Positions, error) {
+func NewPosition(ctx context.Context, dto *request.CreatePosition) (*Positions, error) {
 	position := &Positions{
-		Type:           req.Type,
-		PositionNumber: req.PositionNumber,
+		Type:           dto.Type,
+		PositionNumber: dto.PositionNumber,
 	}
-	err := validation.Validate().Struct(position)
-	if err != nil {
-		return nil, err
+
+	if ctx.IsInValid() {
+		return nil, ctx.ValidationError()
 	}
+
 	return position, nil
 }

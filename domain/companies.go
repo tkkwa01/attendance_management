@@ -2,7 +2,6 @@ package domain
 
 import (
 	"attendance-management/packages/context"
-	"attendance-management/packages/validation"
 	"attendance-management/resource/request"
 )
 
@@ -13,14 +12,15 @@ type Companies struct {
 	Employments   []Employments `json:"employments" gorm:"foreignKey:CompanyID"`
 }
 
-func NewCompany(ctx context.Context, req *request.CreateCompany) (*Companies, error) {
+func NewCompany(ctx context.Context, dto *request.CreateCompany) (*Companies, error) {
 	company := &Companies{
-		Name:          req.Name,
-		CompanyNumber: req.CompanyNumber,
+		Name:          dto.Name,
+		CompanyNumber: dto.CompanyNumber,
 	}
-	err := validation.Validate().Struct(company)
-	if err != nil {
-		return nil, err
+
+	if ctx.IsInValid() {
+		return nil, ctx.ValidationError()
 	}
+
 	return company, nil
 }

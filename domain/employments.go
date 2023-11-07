@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"attendance-management/packages/context"
 	"attendance-management/resource/request"
 	"time"
 )
@@ -18,7 +19,7 @@ type Employments struct {
 	Salaries         []Salaries   `json:"salaries" gorm:"foreignKey:EmploymentID"`
 }
 
-func NewEmployment(dto *request.CreateEmployment) (*Employments, error) {
+func NewEmployment(ctx context.Context, dto *request.CreateEmployment) (*Employments, error) {
 	var employments = &Employments{
 		EmployeeID:       dto.EmployeeID,
 		CompanyID:        dto.CompanyID,
@@ -27,5 +28,10 @@ func NewEmployment(dto *request.CreateEmployment) (*Employments, error) {
 		SalaryTypeID:     dto.SalaryTypeID,
 		EmploymentNumber: dto.EmploymentNumber,
 	}
+
+	if ctx.IsInValid() {
+		return nil, ctx.ValidationError()
+	}
+
 	return employments, nil
 }

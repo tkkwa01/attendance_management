@@ -2,7 +2,6 @@ package domain
 
 import (
 	"attendance-management/packages/context"
-	"attendance-management/packages/validation"
 	"attendance-management/resource/request"
 )
 
@@ -13,14 +12,15 @@ type SalaryTypes struct {
 	Employments      []Employments `gorm:"foreignKey:SalaryTypeID"`
 }
 
-func NewSalaryType(ctx context.Context, req *request.CreateSalaryType) (*SalaryTypes, error) {
-	salaryType := &SalaryTypes{
-		Type: req.Type,
-	}
-	err := validation.Validate().Struct(salaryType)
-	if err != nil {
-		return nil, err
+func NewSalaryType(ctx context.Context, dto *request.CreateSalaryType) (*SalaryTypes, error) {
+	salaryType := SalaryTypes{
+		Type:             dto.Type,
+		SalaryTypeNumber: dto.SalaryTypeNumber,
 	}
 
-	return salaryType, nil
+	if ctx.IsInValid() {
+		return nil, ctx.ValidationError()
+	}
+
+	return &salaryType, nil
 }
