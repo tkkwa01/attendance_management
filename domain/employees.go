@@ -4,17 +4,17 @@ import (
 	"attendance-management/domain/vobj"
 	"attendance-management/packages/context"
 	"attendance-management/resource/request"
-	"gorm.io/gorm"
 )
 
 type Employees struct {
-	gorm.Model
-	Name           string              `json:"name"`
-	PhoneNumber    string              `json:"phone_number"`
+	ID             uint                `json:"id" gorm:"primaryKey;autoIncrement"`
+	Name           string              `json:"name" gorm:"type:varchar(255);not null"`
+	PhoneNumber    string              `json:"phone_number" gorm:"type:varchar(255);not null"`
 	Email          string              `json:"email" gorm:"index;unique"`
 	EmployeeNumber uint                `json:"employee_number" gorm:"unique"`
 	RecoveryToken  *vobj.RecoveryToken `json:"-" gorm:"index"`
 	Password       vobj.Password       `json:"-"`
+	Employments    []Employments       `json:"employments" gorm:"foreignKey:EmployeeID"`
 }
 
 func NewEmployee(ctx context.Context, dto *request.EmployeeCreate) (*Employees, error) {

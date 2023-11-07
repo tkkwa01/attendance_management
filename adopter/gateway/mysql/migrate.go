@@ -3,11 +3,9 @@ package mysql
 import (
 	"attendance-management/domain"
 	"attendance-management/driver"
-	"fmt"
 )
 
 func init() {
-	fmt.Println("jojiojijijio")
 	err := driver.GetRDB().AutoMigrate(
 		&domain.Attendance{},
 		&domain.Companies{},
@@ -20,9 +18,4 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-}
-
-func Chat() string {
-	a := "hoge"
-	return a
 }

@@ -1,41 +1,31 @@
 package domain
 
 import (
-	"attendance-management/packages/context"
-	"attendance-management/packages/validation"
 	"attendance-management/resource/request"
-	"gorm.io/gorm"
 	"time"
 )
 
 type Employments struct {
-	gorm.Model
-	EmployeeID       uint      `json:"employee_id"`
-	CompanyID        uint      `json:"company_id"`
-	PositionID       uint      `json:"position_id"`
-	StartDate        time.Time `json:"start_date"`
-	EndDate          time.Time `json:"end_date"`
-	SalaryTypeID     uint      `json:"salary_type_id"`
-	EmploymentNumber uint      `json:"employment_number" gorm:"unique"`
-	//Employees        Employees   `gorm:"foreignKey:EmployeeID"`
-	//Companies        Companies   `gorm:"foreignKey:CompanyID"`
-	//Positions        Positions   `gorm:"foreignKey:PositionID"`
-	//SalaryTypes      SalaryTypes `gorm:"foreignKey:SalaryTypeID"`
+	ID               uint         `json:"id" gorm:"primaryKey;autoIncrement"`
+	EmployeeID       uint         `json:"employee_id" gorm:"not null"`
+	CompanyID        uint         `json:"company_id" gorm:"not null"`
+	Position         string       `json:"position_id" gorm:"type:varchar(255);not null"`
+	StartDate        time.Time    `json:"start_date" gorm:"type:date;not null"`
+	EndDate          *time.Time   `json:"end_date" gorm:"type:date"`
+	SalaryTypeID     uint         `json:"salary_type_id" gorm:"not null"`
+	EmploymentNumber uint         `json:"employment_number" gorm:"unique"`
+	Attendance       []Attendance `json:"attendance" gorm:"foreignKey:EmploymentID"`
+	Salaries         []Salaries   `json:"salaries" gorm:"foreignKey:EmploymentID"`
 }
 
-func NewEmployment(ctx context.Context, req *request.CreateEmployment) (*Employments, error) {
-	employments := &Employments{
-		EmployeeID:       req.EmployeeID,
-		CompanyID:        req.CompanyID,
-		PositionID:       req.PositionID,
-		StartDate:        req.StartDate,
-		EndDate:          req.EndDate,
-		SalaryTypeID:     req.SalaryTypeID,
-		EmploymentNumber: req.EmploymentNumber,
-	}
-	err := validation.Validate().Struct(employments)
-	if err != nil {
-		return nil, err
+func NewEmployment(dto *request.CreateEmployment) (*Employments, error) {
+	var employments = &Employments{
+		EmployeeID:       dto.EmployeeID,
+		CompanyID:        dto.CompanyID,
+		Position:         dto.Position,
+		StartDate:        dto.StartDate,
+		SalaryTypeID:     dto.SalaryTypeID,
+		EmploymentNumber: dto.EmploymentNumber,
 	}
 	return employments, nil
 }

@@ -4,13 +4,13 @@ import (
 	"attendance-management/packages/context"
 	"attendance-management/packages/validation"
 	"attendance-management/resource/request"
-	"gorm.io/gorm"
 )
 
 type Companies struct {
-	gorm.Model
-	Name          string `json:"name"`
-	CompanyNumber uint   `json:"company_number" gorm:"unique"`
+	ID            uint          `json:"id" gorm:"primaryKey;autoIncrement"`
+	Name          string        `json:"name" gorm:"type:varchar(255);not null"`
+	CompanyNumber uint          `json:"company_number" gorm:"unique"`
+	Employments   []Employments `json:"employments" gorm:"foreignKey:CompanyID"`
 }
 
 func NewCompany(ctx context.Context, req *request.CreateCompany) (*Companies, error) {

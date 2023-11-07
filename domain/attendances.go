@@ -4,14 +4,13 @@ import (
 	"attendance-management/resource/request"
 	"time"
 )
-import "gorm.io/gorm"
 
 type Attendance struct {
-	gorm.Model
-	EmployeeNumber   uint       `json:"employee_number" gorm:"foreignKey:EmployeeNumber"`
-	EmploymentID     uint       `json:"employment_id" gorm:"foreignKey:EmploymentID"`
-	CheckInTime      time.Time  `json:"check_in_time"`
-	CheckOutTime     *time.Time `json:"check_out_time"`
+	ID               uint       `json:"id" gorm:"primaryKey;autoIncrement"`
+	EmployeeNumber   uint       `json:"employee_number" gorm:"not null"`
+	EmploymentID     uint       `json:"employment_id"`
+	CheckInTime      time.Time  `json:"check_in_time" gorm:"type:time;not null"`
+	CheckOutTime     *time.Time `json:"check_out_time" gorm:"type:time;not null"`
 	AttendanceNumber uint       `json:"attendance_number"`
 	Latitude         float64    `json:"latitude"`
 	Longitude        float64    `json:"longitude"`

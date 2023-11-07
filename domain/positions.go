@@ -4,13 +4,13 @@ import (
 	"attendance-management/packages/context"
 	"attendance-management/packages/validation"
 	"attendance-management/resource/request"
-	"gorm.io/gorm"
 )
 
 type Positions struct {
-	gorm.Model
-	Type           string `json:"type"`
-	PositionNumber uint   `json:"position_number" gorm:"unique"`
+	ID             uint          `json:"id" gorm:"primaryKey;autoIncrement"`
+	Type           string        `json:"type" gorm:"type:varchar(255);not null"`
+	PositionNumber uint          `json:"position_number" gorm:"unique"`
+	Employments    []Employments `gorm:"foreignKey:PositionID"`
 }
 
 func NewPosition(ctx context.Context, req *request.CreatePosition) (*Positions, error) {

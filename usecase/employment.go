@@ -46,7 +46,7 @@ func NewEmploymentInputFactory(er EmploymentRepository) EmploymentInputFactory {
 }
 
 func (e employment) Create(ctx context.Context, req *request.CreateEmployment) error {
-	res, err := domain.NewEmployment(ctx, req)
+	res, err := domain.NewEmployment(req)
 	// req.EmploymentNumberをkeyにしてemploymentが存在するか確認
 	err = e.employmentRepo.NumberExist(ctx, req.EmploymentNumber)
 	if err == nil {
@@ -82,14 +82,11 @@ func (e employment) Update(ctx context.Context, req *request.UpdateEmployment) e
 	if req.CompanyID != 0 {
 		employment.CompanyID = req.CompanyID
 	}
-	if req.PositionID != 0 {
-		employment.PositionID = req.PositionID
+	if req.Position != "" {
+		employment.Position = req.Position
 	}
 	if req.StartDate != (time.Time{}) {
 		employment.StartDate = req.StartDate
-	}
-	if req.EndDate != (time.Time{}) {
-		employment.EndDate = req.EndDate
 	}
 
 	err = e.employmentRepo.Update(ctx, employment)

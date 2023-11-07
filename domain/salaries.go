@@ -1,14 +1,13 @@
 package domain
 
 import (
-	"gorm.io/gorm"
 	"time"
 )
 
 type Salaries struct {
-	gorm.Model
-	EmploymentID       uint      `json:"employment_id"`
-	MonthYear          time.Time `json:"month_year"`
+	ID                 uint      `json:"id" gorm:"primaryKey;autoIncrement"`
+	EmploymentID       uint      `json:"employment_id" gorm:"not null"`
+	MonthYear          time.Time `json:"month_year" gorm:"type:date;not null"`
 	MonthlyTotalSalary int       `json:"monthly_total_salary"`
 	HoursWorked        int       `json:"hours_worked"`
 }
