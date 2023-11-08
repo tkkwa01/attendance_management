@@ -70,7 +70,7 @@ func (a attendance) CheckIn(ctx context.Context, req *request.CreateAttendance, 
 		return errors.New("既に出勤済みです。退勤を先に行ってください。")
 	}
 	// 新しい出勤データを作成
-	newAttendance, err := domain.NewAttendance(req)
+	newAttendance, err := domain.NewAttendance(ctx, req)
 	if err != nil {
 		return err
 	}

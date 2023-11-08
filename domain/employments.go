@@ -15,8 +15,8 @@ type Employments struct {
 	EndDate          *time.Time   `json:"end_date" gorm:"type:date"`
 	SalaryTypeID     uint         `json:"salary_type_id" gorm:"not null"`
 	EmploymentNumber uint         `json:"employment_number" gorm:"unique"`
-	Attendance       []Attendance `json:"attendance" gorm:"foreignKey:EmploymentID"`
-	Salaries         []Salaries   `json:"salaries" gorm:"foreignKey:EmploymentID"`
+	Attendance       []Attendance `json:"attendance" gorm:"many2many:attendances"`
+	Salaries         []Salaries   `json:"salaries" gorm:"many2many:salaries"`
 }
 
 func NewEmployment(ctx context.Context, dto *request.CreateEmployment) (*Employments, error) {

@@ -46,7 +46,7 @@ func NewEmploymentInputFactory(er EmploymentRepository) EmploymentInputFactory {
 }
 
 func (e employment) Create(ctx context.Context, req *request.CreateEmployment) error {
-	res, err := domain.NewEmployment(req)
+	res, err := domain.NewEmployment(ctx, req)
 	// req.EmploymentNumberをkeyにしてemploymentが存在するか確認
 	err = e.employmentRepo.NumberExist(ctx, req.EmploymentNumber)
 	if err == nil {

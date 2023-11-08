@@ -9,7 +9,7 @@ type Companies struct {
 	ID            uint          `json:"id" gorm:"primaryKey;autoIncrement"`
 	Name          string        `json:"name" gorm:"type:varchar(255);not null"`
 	CompanyNumber uint          `json:"company_number" gorm:"unique"`
-	Employments   []Employments `json:"employments" gorm:"foreignKey:CompanyID"`
+	Employments   []Employments `json:"employments"`
 }
 
 func NewCompany(ctx context.Context, dto *request.CreateCompany) (*Companies, error) {
