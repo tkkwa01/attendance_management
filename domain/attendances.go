@@ -8,7 +8,6 @@ import (
 
 type Attendance struct {
 	ID               uint       `json:"id" gorm:"primaryKey;autoIncrement"`
-	EmployeeNumber   uint       `json:"employee_number" gorm:"not null"`
 	EmploymentID     uint       `json:"employment_id"`
 	CheckInTime      time.Time  `json:"check_in_time" gorm:"type:time;not null"`
 	CheckOutTime     *time.Time `json:"check_out_time" gorm:"type:time;not null"`
@@ -19,7 +18,6 @@ type Attendance struct {
 
 func NewAttendance(ctx context.Context, dto *request.CreateAttendance) (*Attendance, error) {
 	attendance := Attendance{
-		EmployeeNumber:   dto.EmployeeNumber,
 		EmploymentID:     dto.EmploymentID,
 		CheckInTime:      dto.CheckInTime,
 		CheckOutTime:     nil,
@@ -37,7 +35,6 @@ func NewAttendance(ctx context.Context, dto *request.CreateAttendance) (*Attenda
 
 func UpdateAttendance(dto *request.UpdateAttendance) (*Attendance, error) {
 	attendance := &Attendance{
-		EmployeeNumber:   dto.EmployeeNumber,
 		EmploymentID:     dto.EmploymentID,
 		CheckInTime:      dto.CheckInTime,
 		CheckOutTime:     dto.CheckOutTime,
