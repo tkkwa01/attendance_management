@@ -4,7 +4,6 @@ type EmployeeCreate struct {
 	Name            string `json:"name"`
 	PhoneNumber     string `json:"phone_number"`
 	Email           string `json:"email"`
-	EmployeeNumber  uint   `json:"employee_number"`
 	Password        string `json:"password"`
 	PasswordConfirm string `json:"password_confirm"`
 }
