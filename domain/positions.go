@@ -6,10 +6,10 @@ import (
 )
 
 type Positions struct {
-	ID             uint   `json:"id" gorm:"primaryKey;autoIncrement"`
-	Type           string `json:"type" gorm:"type:varchar(255);not null"`
-	PositionNumber uint   `json:"position_number" gorm:"unique"`
-	Employments    []Employments
+	ID             uint          `json:"id" gorm:"primaryKey;autoIncrement"`
+	Type           string        `json:"type" gorm:"type:varchar(255);not null"`
+	PositionNumber uint          `json:"position_number" gorm:"unique"`
+	Employments    []Employments `json:"employments" gorm:"foreignKey:PositionID"`
 }
 
 func NewPosition(ctx context.Context, dto *request.CreatePosition) (*Positions, error) {

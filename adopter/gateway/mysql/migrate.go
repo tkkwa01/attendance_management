@@ -7,13 +7,13 @@ import (
 
 func init() {
 	err := driver.GetRDB().AutoMigrate(
-		&domain.Employments{},
-		&domain.Attendance{},
+		&domain.Positions{},
+		&domain.SalaryTypes{},
 		&domain.Companies{},
 		&domain.Employees{},
-		&domain.Positions{},
+		&domain.Employments{},
+		&domain.Attendance{},
 		&domain.Salaries{},
-		&domain.SalaryTypes{},
 	)
 	if err != nil {
 		panic(err)

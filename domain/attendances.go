@@ -7,15 +7,14 @@ import (
 )
 
 type Attendance struct {
-	ID               uint          `json:"id" gorm:"primaryKey;autoIncrement"`
-	EmployeeNumber   uint          `json:"employee_number"`
-	EmploymentID     uint          `json:"employment_id"`
-	CheckInTime      time.Time     `json:"check_in_time" gorm:"type:time;not null"`
-	CheckOutTime     *time.Time    `json:"check_out_time" gorm:"type:time;not null"`
-	AttendanceNumber uint          `json:"attendance_number"`
-	Latitude         float64       `json:"latitude"`
-	Longitude        float64       `json:"longitude"`
-	Employment       []Employments `json:"employment" gorm:"many2many:employments"`
+	ID               uint       `json:"id" gorm:"primaryKey;autoIncrement"`
+	EmployeeNumber   uint       `json:"employee_number"`
+	EmploymentID     uint       `json:"employment_id" gorm:"foreignKey;references:ID"`
+	CheckInTime      time.Time  `json:"check_in_time" gorm:"type:time;not null"`
+	CheckOutTime     *time.Time `json:"check_out_time" gorm:"type:time;not null"`
+	AttendanceNumber uint       `json:"attendance_number"`
+	Latitude         float64    `json:"latitude"`
+	Longitude        float64    `json:"longitude"`
 }
 
 func NewAttendance(ctx context.Context, dto *request.CreateAttendance) (*Attendance, error) {

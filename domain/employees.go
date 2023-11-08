@@ -14,7 +14,7 @@ type Employees struct {
 	Email          string              `json:"email" gorm:"index;unique"`
 	RecoveryToken  *vobj.RecoveryToken `json:"-" gorm:"index"`
 	Password       vobj.Password       `json:"-"`
-	Employments    []Employments       `json:"employments"`
+	Employments    []Employments       `json:"employments" gorm:"foreignKey:EmployeeID"`
 }
 
 func NewEmployee(ctx context.Context, dto *request.EmployeeCreate) (*Employees, error) {
