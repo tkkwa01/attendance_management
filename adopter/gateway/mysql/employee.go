@@ -32,11 +32,11 @@ func (e employee) NumberExist(ctx context.Context, number string) (bool, error) 
 	return count > 0, nil
 }
 
-func (e employee) GetByID(ctx context.Context, employeeNumber uint) (*domain.Employees, error) {
+func (e employee) GetByID(ctx context.Context, id uint) (*domain.Employees, error) {
 	db := ctx.DB()
 
 	var user domain.Employees
-	err := db.Where(&domain.Employees{EmployeeNumber: employeeNumber}).First(&user).Error
+	err := db.Where(&domain.Employees{ID: id}).First(&user).Error
 	if err != nil {
 		return nil, dbError(err)
 	}
@@ -52,11 +52,11 @@ func (e employee) Update(ctx context.Context, employee *domain.Employees) error 
 	return nil
 }
 
-func (e employee) Delete(ctx context.Context, number uint) error {
+func (e employee) Delete(ctx context.Context, id uint) error {
 	db := ctx.DB()
 
 	var employee domain.Employees
-	res := db.Where("employee_number = ?", number).Delete(&employee)
+	res := db.Where("id = ?", id).Delete(&employee)
 	if res.Error != nil {
 		return res.Error
 	}

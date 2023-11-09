@@ -37,7 +37,7 @@ type AttendanceRepository interface {
 	Update(ctx context.Context, attendance *domain.Attendance) error
 	Delete(ctx context.Context, number uint) error
 	NumberExist(ctx context.Context, number uint) (bool, error)
-	GetByEmployeeNumberAndEmptyCheckout(ctx context.Context, number uint) (*domain.Attendance, error)
+	GetByIDAndEmptyCheckout(ctx context.Context, number uint) (*domain.Attendance, error)
 	GetByDate(ctx context.Context, date time.Time) ([]*domain.Attendance, error)
 	GetAll(ctx context.Context) ([]*domain.Attendance, error)
 }
@@ -59,8 +59,8 @@ func NewAttendanceInputFactory(ar AttendanceRepository) AttendanceInputFactory {
 }
 
 func (a attendance) CheckIn(ctx context.Context, req *request.CreateAttendance, number uint) error {
-	// 指定されたemployee_numberでcheckout_timeが空のレコードが存在するかチェック
-	existingAttendance, err := a.attendanceRepo.GetByEmployeeNumberAndEmptyCheckout(ctx, number)
+	// 指定されたIDでcheckout_timeが空のレコードが存在するかチェック
+	existingAttendance, err := a.attendanceRepo.GetByIDAndEmptyCheckout(ctx, number)
 	if err != nil {
 		return err
 	}
@@ -115,14 +115,14 @@ func (a attendance) GetByID(ctx context.Context, number uint) error {
 }
 
 func (a attendance) Update(ctx context.Context, req *request.UpdateAttendance) error {
-	attendance, err := a.attendanceRepo.GetByID(ctx, req.AttendanceNumber)
+	attendance, err := a.attendanceRepo.GetByID(ctx, req.ID)
 	if err != nil {
 		return err
 	}
 
 	err = ctx.Transaction(func(ctx context.Context) error {
 
-		oldID := req.AttendanceNumber
+		oldID := req.ID
 		err = a.attendanceRepo.Delete(ctx, oldID)
 		if err != nil {
 			return err

@@ -23,12 +23,12 @@ func NewAttendance(r *router.Router, inputFactory usecase.AttendanceInputFactory
 	}
 
 	r.Group("attendances", nil, func(r *router.Router) {
-		r.Post("check-in/:employee_number", handler.CheckIn)
-		r.Put("check-out/:attendance_number", handler.CheckOut)
+		r.Post("check-in/:employment_id", handler.CheckIn)
+		r.Put("check-out/:id", handler.CheckOut)
 		r.Get("", handler.GetAttendance)
 		r.Get("all", handler.GetAll)
-		r.Put(":attendance_number", handler.Update)
-		r.Delete(":attendance_number", handler.Delete)
+		r.Put(":id", handler.Update)
+		r.Delete(":id", handler.Delete)
 	})
 }
 
@@ -36,51 +36,51 @@ func (a attendance) CheckIn(ctx context.Context, c *gin.Context) error {
 	var req request.CreateAttendance
 
 	// IDを文字列として取得
-	employeeNumberStr := c.Param("employee_number")
-	if employeeNumberStr == "" {
-		return errors.New("employee_number parameter is missing")
+	employmentIDStr := c.Param("employment_id")
+	if employmentIDStr == "" {
+		return errors.New("employment_id parameter is missing")
 	}
 
 	// 文字列をuintに変換
-	employeeNumber, err := strconv.ParseUint(employeeNumberStr, 10, 64)
+	employmentId, err := strconv.ParseUint(employmentIDStr, 10, 64)
 	if err != nil {
-		return errors.New("invalid employee_number parameter")
+		return errors.New("invalid employment_id parameter")
 	}
-	req.EmployeeNumber = uint(employeeNumber)
+	req.EmploymentID = uint(employmentId)
 
 	// リクエストボディをバインド
 	if err := c.Bind(&req); err != nil {
 		return err
 	}
 
-	number := req.AttendanceNumber
+	ID := req.ID
 
 	outputPort := a.outputFactory(c)
 	inputPort := a.inputFactory(outputPort)
 
-	return inputPort.CheckIn(ctx, &req, number)
+	return inputPort.CheckIn(ctx, &req, ID)
 }
 
 func (a attendance) CheckOut(ctx context.Context, c *gin.Context) error {
 	var req request.CheckOutAttendance
 
 	// IDを文字列として取得
-	employeeNumberStr := c.Param("attendance_number")
-	if employeeNumberStr == "" {
-		return errors.New("attendance_number parameter is missing")
+	IDStr := c.Param("id")
+	if IDStr == "" {
+		return errors.New("id parameter is missing")
 	}
 	// 文字列をuintに変換
-	attendanceNumber, err := strconv.ParseUint(employeeNumberStr, 10, 64)
+	ID, err := strconv.ParseUint(IDStr, 10, 64)
 	if err != nil {
-		return errors.New("invalid attendance_number parameter")
+		return errors.New("invalid id parameter")
 	}
-	req.AttendanceNumber = uint(attendanceNumber)
+	req.ID = uint(ID)
 	// リクエストボディをバインド
 	if err := c.Bind(&req); err != nil {
 		return err
 	}
 
-	number := req.AttendanceNumber
+	number := req.ID
 
 	outputPort := a.outputFactory(c)
 	inputPort := a.inputFactory(outputPort)
@@ -89,8 +89,8 @@ func (a attendance) CheckOut(ctx context.Context, c *gin.Context) error {
 }
 
 func (a attendance) GetAttendance(ctx context.Context, c *gin.Context) error {
-	numberStr := c.Query("attendance_number")
-	number, err := stringToUint(numberStr)
+	IDStr := c.Query("id")
+	ID, err := stringToUint(IDStr)
 	if err != nil {
 		return err
 	}
@@ -98,23 +98,23 @@ func (a attendance) GetAttendance(ctx context.Context, c *gin.Context) error {
 	outputPort := a.outputFactory(c)
 	inputPort := a.inputFactory(outputPort)
 
-	return inputPort.GetByID(ctx, number)
+	return inputPort.GetByID(ctx, ID)
 }
 
 func (a attendance) Update(ctx context.Context, c *gin.Context) error {
 	var req request.UpdateAttendance
 
 	// IDを文字列として取得
-	employeeNumberStr := c.Param("attendance_number")
-	if employeeNumberStr == "" {
-		return errors.New("attendance_number parameter is missing")
+	IDStr := c.Param("id")
+	if IDStr == "" {
+		return errors.New("id parameter is missing")
 	}
 	// 文字列をuintに変換
-	attendanceNumber, err := strconv.ParseUint(employeeNumberStr, 10, 64)
+	ID, err := strconv.ParseUint(IDStr, 10, 64)
 	if err != nil {
-		return errors.New("invalid attendance_number parameter")
+		return errors.New("invalid id parameter")
 	}
-	req.AttendanceNumber = uint(attendanceNumber)
+	req.ID = uint(ID)
 	// リクエストボディをバインド
 	if err := c.Bind(&req); err != nil {
 		return err
@@ -127,17 +127,17 @@ func (a attendance) Update(ctx context.Context, c *gin.Context) error {
 }
 
 func (a attendance) Delete(ctx context.Context, c *gin.Context) error {
-	// attendance_numberをパスパラメータから取得
-	attendanceNumberStr := c.Param("attendance_number")
-	if attendanceNumberStr == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "attendance_number parameter is missing"})
-		return errors.New("attendance_number parameter is missing")
+	// IDをパスパラメータから取得
+	IDStr := c.Param("id")
+	if IDStr == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "id parameter is missing"})
+		return errors.New("id parameter is missing")
 	}
 
 	// 文字列をuintに変換
-	attendanceNumber, err := strconv.ParseUint(attendanceNumberStr, 10, 64)
+	ID, err := strconv.ParseUint(IDStr, 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid attendance_number parameter"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id parameter"})
 		return err
 	}
 
@@ -146,7 +146,7 @@ func (a attendance) Delete(ctx context.Context, c *gin.Context) error {
 	inputPort := a.inputFactory(outputPort)
 
 	// inputPortのDeleteメソッドを使用して従業員を削除
-	return inputPort.Delete(ctx, uint(attendanceNumber))
+	return inputPort.Delete(ctx, uint(ID))
 }
 
 func (a attendance) GetAll(ctx context.Context, c *gin.Context) error {

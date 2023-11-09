@@ -28,8 +28,8 @@ func NewEmployee(r *router.Router, inputFactory usecase.EmployeeInputFactory, ou
 
 	r.Group("employees", nil, func(r *router.Router) {
 		r.Post("", handler.Create)
-		r.Put(":employee_number", handler.Update)
-		r.Delete(":employee_number", handler.Delete)
+		r.Put(":id", handler.Update)
+		r.Delete(":id", handler.Delete)
 		r.Post("login", handler.Login)
 		r.Post("refresh-token", handler.RefreshToken)
 		r.Patch("reset-password-request", handler.ResetPasswordRequest)
@@ -67,20 +67,6 @@ func (e employee) GetMe(ctx context.Context, c *gin.Context) error {
 func (e employee) Update(ctx context.Context, c *gin.Context) error {
 	var req request.EmployeeUpdate
 
-	// IDを文字列として取得
-	employeeNumberStr := c.Param("employee_number")
-	if employeeNumberStr == "" {
-		return errors.New("employee_number parameter is missing")
-	}
-
-	// 文字列をuintに変換
-	employeeNumber, err := strconv.ParseUint(employeeNumberStr, 10, 64)
-	if err != nil {
-		return errors.New("invalid employee_number parameter")
-	}
-	req.EmployeeNumber = uint(employeeNumber)
-
-	// リクエストボディをバインド
 	if err := c.Bind(&req); err != nil {
 		return err
 	}
@@ -92,17 +78,17 @@ func (e employee) Update(ctx context.Context, c *gin.Context) error {
 }
 
 func (e employee) Delete(ctx context.Context, c *gin.Context) error {
-	// employee_numberをパスパラメータから取得
-	employeeNumberStr := c.Param("employee_number")
-	if employeeNumberStr == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "employee_number parameter is missing"})
-		return errors.New("employee_number parameter is missing")
+	// idをパスパラメータから取得
+	idStr := c.Param("id")
+	if idStr == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "id parameter is missing"})
+		return errors.New("id parameter is missing")
 	}
 
 	// 文字列をuintに変換
-	employeeNumber, err := strconv.ParseUint(employeeNumberStr, 10, 64)
+	id, err := strconv.ParseUint(idStr, 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid employee_number parameter"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id parameter"})
 		return err
 	}
 
@@ -111,7 +97,7 @@ func (e employee) Delete(ctx context.Context, c *gin.Context) error {
 	inputPort := e.inputFactory(outputPort)
 
 	// inputPortのDeleteメソッドを使用して従業員を削除
-	return inputPort.Delete(ctx, uint(employeeNumber))
+	return inputPort.Delete(ctx, uint(id))
 }
 
 func (e employee) ResetPasswordRequest(ctx context.Context, c *gin.Context) error {

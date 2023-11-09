@@ -7,14 +7,13 @@ import (
 )
 
 type Employees struct {
-	ID             uint                `json:"id" gorm:"primaryKey;autoIncrement"`
-	EmployeeNumber uint                `json:"employee_number" gorm:"unique"`
-	Name           string              `json:"name" gorm:"type:varchar(255);not null"`
-	PhoneNumber    string              `json:"phone_number" gorm:"type:varchar(255);not null"`
-	Email          string              `json:"email" gorm:"index;unique"`
-	RecoveryToken  *vobj.RecoveryToken `json:"-" gorm:"index"`
-	Password       vobj.Password       `json:"-"`
-	Employments    []Employments       `json:"employments" gorm:"foreignKey:EmployeeID"`
+	ID            uint                `json:"id" gorm:"primaryKey;autoIncrement"`
+	Name          string              `json:"name" gorm:"type:varchar(255);not null"`
+	PhoneNumber   string              `json:"phone_number" gorm:"type:varchar(255);not null"`
+	Email         string              `json:"email" gorm:"index;unique"`
+	RecoveryToken *vobj.RecoveryToken `json:"-" gorm:"index"`
+	Password      vobj.Password       `json:"-"`
+	Employments   []Employments       `json:"employments" gorm:"foreignKey:EmployeeID"`
 }
 
 func NewEmployee(ctx context.Context, dto *request.EmployeeCreate) (*Employees, error) {

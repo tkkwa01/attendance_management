@@ -16,7 +16,7 @@ type EmployeeInputPort interface {
 	Create(ctx context.Context, req *request.EmployeeCreate) error
 	GetByID(ctx context.Context, number uint) error
 	Update(ctx context.Context, req *request.EmployeeUpdate) error
-	Delete(ctx context.Context, number uint) error
+	Delete(ctx context.Context, id uint) error
 	ResetPasswordRequest(ctx context.Context, req *request.EmployeeResetPasswordRequest) error
 	ResetPassword(ctx context.Context, req *request.EmployeeResetPassword) error
 	Login(ctx context.Context, req *request.EmployeeLogin) error
@@ -41,7 +41,7 @@ type EmployeeRepository interface {
 	GetByID(ctx context.Context, number uint) (*domain.Employees, error)
 	Update(ctx context.Context, employee *domain.Employees) error
 	NumberExist(ctx context.Context, number string) (bool, error)
-	Delete(ctx context.Context, number uint) error
+	Delete(ctx context.Context, id uint) error
 	GetByEmail(ctx context.Context, email string) (*domain.Employees, error)
 	EmailExists(ctx context.Context, email string) (bool, error)
 	GetByRecoveryToken(ctx context.Context, recoveryToken string) (*domain.Employees, error)
@@ -104,7 +104,7 @@ func (e employee) GetByID(ctx context.Context, number uint) error {
 }
 
 func (e employee) Update(ctx context.Context, req *request.EmployeeUpdate) error {
-	employee, err := e.EmployeeRepo.GetByID(ctx, req.EmployeeNumber)
+	employee, err := e.EmployeeRepo.GetByID(ctx, req.ID)
 	if err != nil {
 		return err
 	}
@@ -123,8 +123,8 @@ func (e employee) Update(ctx context.Context, req *request.EmployeeUpdate) error
 	return e.outputPort.Update(employee)
 }
 
-func (e employee) Delete(ctx context.Context, number uint) error {
-	err := e.EmployeeRepo.Delete(ctx, number)
+func (e employee) Delete(ctx context.Context, id uint) error {
+	err := e.EmployeeRepo.Delete(ctx, id)
 	if err != nil {
 		return err
 	}

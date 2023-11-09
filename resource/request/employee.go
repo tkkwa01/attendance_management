@@ -9,10 +9,10 @@ type EmployeeCreate struct {
 }
 
 type EmployeeUpdate struct {
-	Name           string `json:"name"`
-	EmployeeNumber uint   `json:"employee_number"`
-	PhoneNumber    string `json:"phone_number"`
-	Email          string `json:"email"`
+	ID          uint   `json:"id"`
+	Name        string `json:"name"`
+	PhoneNumber string `json:"phone_number"`
+	Email       string `json:"email"`
 }
 
 type EmployeeLogin struct {

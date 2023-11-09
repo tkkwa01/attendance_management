@@ -82,8 +82,8 @@ func (e employment) Update(ctx context.Context, req *request.UpdateEmployment) e
 	if req.CompanyID != 0 {
 		employment.CompanyID = req.CompanyID
 	}
-	if req.Position != "" {
-		employment.Position = req.Position
+	if req.PositionID != 0 {
+		employment.PositionID = req.PositionID
 	}
 	if req.StartDate != (time.Time{}) {
 		employment.StartDate = req.StartDate

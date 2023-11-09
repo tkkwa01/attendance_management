@@ -21,14 +21,14 @@ func (a attendance) CheckIn(ctx context.Context, attendance *domain.Attendance) 
 	if err := db.Create(attendance).Error; err != nil {
 		return 0, dbError(err)
 	}
-	return attendance.AttendanceNumber, nil
+	return attendance.ID, nil
 }
 
 func (a attendance) CheckOut(ctx context.Context, number uint) error {
 	db := ctx.DB()
 	// 出席記録を検索
 	var targetAttendance domain.Attendance
-	res := db.Where("attendance_number = ?", number).First(&targetAttendance)
+	res := db.Where("id = ?", number).First(&targetAttendance)
 	if res.Error != nil {
 		return dbError(res.Error)
 	}
@@ -59,14 +59,14 @@ func (a attendance) Create(ctx context.Context, attendance *domain.Attendance) (
 	if err := db.Create(attendance).Error; err != nil {
 		return 0, dbError(err)
 	}
-	return attendance.AttendanceNumber, nil
+	return attendance.ID, nil
 }
 
 func (a attendance) GetByID(ctx context.Context, number uint) (*domain.Attendance, error) {
 	db := ctx.DB()
 
 	var attendance domain.Attendance
-	err := db.Where("attendance_number = ?", number).First(&attendance).Error
+	err := db.Where("id = ?", number).First(&attendance).Error
 	if err != nil {
 		return nil, dbError(err)
 	}
@@ -86,7 +86,7 @@ func (a attendance) Delete(ctx context.Context, number uint) error {
 	db := ctx.DB()
 
 	var attendance domain.Attendance
-	res := db.Where("attendance_number = ?", number).Delete(&attendance)
+	res := db.Where("id = ?", number).Delete(&attendance)
 	if res.Error != nil {
 		return dbError(res.Error)
 	}
@@ -110,11 +110,11 @@ func (a attendance) NumberExist(ctx context.Context, number uint) (bool, error) 
 	return true, nil
 }
 
-func (a attendance) GetByEmployeeNumberAndEmptyCheckout(ctx context.Context, number uint) (*domain.Attendance, error) {
+func (a attendance) GetByIDAndEmptyCheckout(ctx context.Context, id uint) (*domain.Attendance, error) {
 	db := ctx.DB()
 
 	var attendance domain.Attendance
-	err := db.Where("employee_number = ? AND check_out_time IS NULL", number).First(&attendance).Error
+	err := db.Where("id = ? AND check_out_time IS NULL", id).First(&attendance).Error
 
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
