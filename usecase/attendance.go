@@ -8,16 +8,14 @@ import (
 	"time"
 )
 
-type (
-	AttendanceInputPort interface {
-		CheckIn(ctx context.Context, req *request.CreateAttendance, number uint) error
-		CheckOut(ctx context.Context, number uint) error
-		GetByID(ctx context.Context, number uint) error
-		Update(ctx context.Context, req *request.UpdateAttendance) error
-		Delete(ctx context.Context, number uint) error
-		GetAll(ctx context.Context) error
-	}
-)
+type AttendanceInputPort interface {
+	CheckIn(ctx context.Context, req *request.CreateAttendance, number uint) error
+	CheckOut(ctx context.Context, number uint) error
+	GetByID(ctx context.Context, number uint) error
+	Update(ctx context.Context, req *request.UpdateAttendance) error
+	Delete(ctx context.Context, number uint) error
+	GetAll(ctx context.Context) error
+}
 
 type AttendanceOutputPort interface {
 	CheckIn(id uint) error
@@ -59,7 +57,7 @@ func NewAttendanceInputFactory(ar AttendanceRepository) AttendanceInputFactory {
 }
 
 func (a attendance) CheckIn(ctx context.Context, req *request.CreateAttendance, number uint) error {
-	// 指定されたIDでcheckout_timeが空のレコードが存在するかチェック
+	// 指定されたIDでcheckout_timeが空のレコードが存在するかチェック®ƒ
 	existingAttendance, err := a.attendanceRepo.GetByIDAndEmptyCheckout(ctx, number)
 	if err != nil {
 		return err

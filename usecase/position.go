@@ -78,9 +78,6 @@ func (p position) Update(ctx context.Context, req *request.UpdatePosition) error
 	if req.Type != "" {
 		position.Type = req.Type
 	}
-	if req.PositionNumber != 0 {
-		position.PositionNumber = req.PositionNumber
-	}
 
 	err = p.positionRepo.Update(ctx, position)
 	if err != nil {
