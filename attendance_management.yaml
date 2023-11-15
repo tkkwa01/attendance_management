@@ -1,0 +1,181 @@
+openapi: 3.0.0
+info:
+  title: Attendance Management API
+  version: "1.0"
+paths:
+  /attendances/check-in/{employment_id}:
+    post:
+      summary: Employee check-in
+      parameters:
+        - name: employment_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAttendanceRequest'
+      responses:
+        '200':
+          description: Check-in successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttendanceResponse'
+        '400':
+          description: Invalid request
+
+  /attendances/check-out/{id}:
+    put:
+      summary: Employee check-out
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckOutAttendanceRequest'
+      responses:
+        '200':
+          description: Check-out successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttendanceResponse'
+        '400':
+          description: Invalid request
+
+  /attendances:
+    get:
+      summary: Get attendance by ID
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Attendance data retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttendanceResponse'
+        '400':
+          description: Invalid ID
+
+  /attendances/all:
+    get:
+      summary: Get all attendance records
+      responses:
+        '200':
+          description: List of all attendance records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AttendanceResponse'
+
+  /attendances/{id}:
+    put:
+      summary: Update an attendance record
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAttendanceRequest'
+      responses:
+        '200':
+          description: Attendance updated
+        '400':
+          description: Invalid request
+
+    delete:
+      summary: Delete an attendance record
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Attendance deleted
+        '400':
+          description: Invalid request
+
+components:
+  schemas:
+    CreateAttendanceRequest:
+      type: object
+      properties:
+        employmentId:
+          type: integer
+        checkInTime:
+          type: string
+          format: date-time
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+
+    CheckOutAttendanceRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+
+    UpdateAttendanceRequest:
+      type: object
+      properties:
+        employmentId:
+          type: integer
+        checkInTime:
+          type: string
+          format: date-time
+        checkOutTime:
+          type: string
+          format: date-time
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+
+    AttendanceResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        employmentId:
+          type: integer
+        checkInTime:
+          type: string
+          format: date-time
+        checkOutTime:
+          type: string
+          format: date-time
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
